@@ -31,3 +31,13 @@ class Charge(BaseModel):
     date: date
     amount: Decimal  # as Amazon shows it: negative is a charge, positive a refund
     pending: bool
+
+
+class Order(BaseModel):
+    """An order's items with every charge and refund Amazon made for it."""
+
+    model_config = ConfigDict(frozen=True)
+
+    order_id: str
+    items: tuple[Item, ...]  # empty when the order isn't in the export
+    charges: tuple[Charge, ...]
