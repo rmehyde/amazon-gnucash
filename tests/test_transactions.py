@@ -1,0 +1,54 @@
+import shutil
+from datetime import date
+from decimal import Decimal
+from pathlib import Path
+
+import pytest
+
+from finances.model import Charge
+from finances.parse.transactions import PageFormatError, load_charges, parse_page
+
+FIXTURE = Path(__file__).parent / "fixtures" / "transactions.html"
+
+
+def charge(order_id, day, amount, pending=False, card="Visa ****4242"):
+    return Charge(
+        login="Pat",
+        order_id=order_id,
+        card=card,
+        date=day,
+        amount=Decimal(amount),
+        pending=pending,
+    )
+
+
+def test_parses_page():
+    charges = parse_page(FIXTURE.read_text())
+
+    assert len(charges) == 9
+    assert charge("112-0000005-0000005", date(2026, 9, 26), "-47.47", pending=True) in charges
+    assert charge("111-0000003-0000003", date(2026, 9, 15), "+195.92") in charges  # refund
+    assert charge("112-0000002-0000002", date(2026, 9, 7), "-15.00") in charges  # shares a day
+    mastercard = "Mastercard ****5555"
+    assert charge("111-0000006-0000006", date(2026, 9, 7), "-1249.99", card=mastercard) in charges
+
+
+def test_overlapping_pages_count_each_charge_once(tmp_path):
+    for name in ("first.html", "again.html"):
+        shutil.copy(FIXTURE, tmp_path / name)
+
+    assert sorted(load_charges(tmp_path), key=repr) == sorted(
+        parse_page(FIXTURE.read_text()), key=repr
+    )
+
+
+@pytest.mark.parametrize(
+    "old, new",
+    [
+        ("apx-transactions-line-item-component-container", "renamed"),
+        ("-$8.70", "-8.70 USD"),
+    ],
+)
+def test_rejects_evolved_page(old, new):
+    with pytest.raises(PageFormatError):
+        parse_page(FIXTURE.read_text().replace(old, new))
