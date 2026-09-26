@@ -1,4 +1,4 @@
-from datetime import date, datetime
+from datetime import date
 from decimal import Decimal
 
 from pydantic import BaseModel, ConfigDict
@@ -17,7 +17,6 @@ class Item(BaseModel):
     currency: str
     total: Decimal  # this item's cost, tax included
     order_status: str
-    ship_date: datetime | None
 
 
 class Charge(BaseModel):

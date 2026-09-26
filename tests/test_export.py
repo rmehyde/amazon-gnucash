@@ -1,4 +1,3 @@
-from datetime import datetime, timezone
 from decimal import Decimal
 from pathlib import Path
 
@@ -24,9 +23,7 @@ def test_loads_items():
         currency="USD",
         total=Decimal("8.70"),
         order_status="Closed",
-        ship_date=datetime(2026, 9, 2, 6, 49, 6, 657000, tzinfo=timezone.utc),
     )
-    assert items[4].ship_date is None  # "Not Available"
 
 
 def test_rejects_export_missing_a_column(tmp_path):

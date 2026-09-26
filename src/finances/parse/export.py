@@ -15,7 +15,6 @@ COLUMNS = {
     "Currency": "currency",
     "Total Amount": "total",
     "Order Status": "order_status",
-    "Ship Date": "ship_date",
 }
 
 
