@@ -29,5 +29,10 @@ def load_items(path: Path) -> list[Item]:
     )
     if missing := COLUMNS.keys() - set(frame.columns):
         raise ExportFormatError(f"{path} is missing columns: {sorted(missing)}")
-    rows = frame.select(COLUMNS.keys()).rename(COLUMNS).iter_rows(named=True)
+    rows = (
+        frame.select(COLUMNS.keys())
+        .rename(COLUMNS)
+        .with_columns(pl.col("total").str.replace_all(",", ""))  # 1,088.74
+        .iter_rows(named=True)
+    )
     return [Item(**row) for row in rows]

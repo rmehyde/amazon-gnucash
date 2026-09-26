@@ -24,6 +24,7 @@ def test_loads_items():
         total=Decimal("8.70"),
         order_status="Closed",
     )
+    assert items[5].total == Decimal("1249.99")  # written "1,249.99"
 
 
 def test_rejects_export_missing_a_column(tmp_path):
