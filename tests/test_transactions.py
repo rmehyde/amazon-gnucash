@@ -28,7 +28,8 @@ def test_parses_page():
 
     assert len(charges) == 10
     assert charge("112-0000005-0000005", date(2026, 9, 26), "-47.47", pending=True) in charges
-    assert charge("111-0000003-0000003", date(2026, 9, 15), "+195.92") in charges  # refund
+    gift_card = "Amazon Gift Card"
+    assert charge("111-0000003-0000003", date(2026, 9, 15), "+195.92", card=gift_card) in charges
     assert charge("112-0000002-0000002", date(2026, 9, 7), "-15.00") in charges  # shares a day
     mastercard = "Mastercard ****5555"
     assert charge("111-0000006-0000006", date(2026, 9, 7), "-1249.99", card=mastercard) in charges

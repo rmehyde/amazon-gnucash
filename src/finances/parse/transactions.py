@@ -12,7 +12,7 @@ from finances.model import Charge
 
 SECTIONS = {"In Progress": True, "Completed": False}  # heading -> pending
 AMOUNT = re.compile(r"([+-])(\D+)([\d,]+\.\d\d)")
-CARD = re.compile(r"(.+ \*{4}\d{4})")
+CARD = re.compile(r"(Amazon Gift Card|.+ \*{4}\d{4})")
 ORDER = re.compile(r"(?:Refund: )?Order #(\S+)")
 GREETING = re.compile(r"Hello, (.+)")
 
