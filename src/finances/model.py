@@ -1,7 +1,10 @@
+import re
 from datetime import date
 from decimal import Decimal
 
 from pydantic import BaseModel, ConfigDict
+
+IN_STORE = re.compile(r"[\da-f]{8}-[\da-f]{4}-[\da-f]{4}-[\da-f]{4}-[\da-f]{12}")
 
 
 class Item(BaseModel):
@@ -41,3 +44,11 @@ class Order(BaseModel):
     order_id: str
     items: tuple[Item, ...]  # empty when the order isn't in the export
     charges: tuple[Charge, ...]
+
+    @property
+    def kind(self) -> str:
+        if self.order_id.startswith("D01-"):
+            return "digital order"
+        if IN_STORE.fullmatch(self.order_id):  # e.g. Whole Foods
+            return "in-store purchase"
+        return "retail order"

@@ -35,7 +35,7 @@ def main() -> None:
 
 def check(order: Order) -> tuple[str, str]:
     if not order.items:
-        return "not in export", ""
+        return f"not in export ({order.kind})", ""
     if any(item.currency != "USD" for item in order.items) or any(
         charge.currency != "$" for charge in order.charges
     ):
