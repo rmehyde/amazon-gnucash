@@ -77,7 +77,7 @@ def _charge(item: Node, login: str, day: date, pending: bool) -> Charge:
     sign, currency, digits = _match(AMOUNT, item.css_first(".a-span-last span")).groups()
     return Charge(
         login=login,
-        order_id=_text(ORDER, item.css_first("a")),
+        order_id=_text(ORDER, item.css_first(".a-span12 > *")),  # a link, or text in store
         card=_text(CARD, item.css_first(".a-span9 span")),
         date=day,
         amount=Decimal(sign + digits.replace(",", "")),

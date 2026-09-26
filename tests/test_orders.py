@@ -23,4 +23,5 @@ def test_gathers_orders_charged_since():
         "112-0000005-0000005": (1, 1),
         "111-0000006-0000006": (1, 1),
         "111-0000009-0000009": (1, 1),  # in Canadian dollars
+        "00000000-0000-4000-8000-000000000010": (0, 1),  # Whole Foods: not in the export
     }
