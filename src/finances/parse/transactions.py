@@ -11,7 +11,7 @@ from selectolax.parser import HTMLParser, Node
 from finances.model import Charge
 
 SECTIONS = {"In Progress": True, "Completed": False}  # heading -> pending
-AMOUNT = re.compile(r"([+-]\$[\d,]+\.\d\d)")
+AMOUNT = re.compile(r"([+-])(\D+)([\d,]+\.\d\d)")
 CARD = re.compile(r"(.+ \*{4}\d{4})")
 ORDER = re.compile(r"(?:Refund: )?Order #(\S+)")
 GREETING = re.compile(r"Hello, (.+)")
@@ -74,20 +74,26 @@ def _dated_items(section: Node):
 
 
 def _charge(item: Node, login: str, day: date, pending: bool) -> Charge:
-    amount = _text(AMOUNT, item.css_first(".a-span-last span"))
+    sign, currency, digits = _match(AMOUNT, item.css_first(".a-span-last span")).groups()
     return Charge(
         login=login,
         order_id=_text(ORDER, item.css_first("a")),
         card=_text(CARD, item.css_first(".a-span9 span")),
         date=day,
-        amount=Decimal(re.sub(r"[$,]", "", amount)),
+        amount=Decimal(sign + digits.replace(",", "")),
+        currency=currency,
         pending=pending,
     )
 
 
 def _text(pattern: re.Pattern, node: Node | None) -> str:
-    """The pattern's one group in the node's text, or an error naming what was found."""
+    """The pattern's one group in the node's text."""
+    return _match(pattern, node).group(1)
+
+
+def _match(pattern: re.Pattern, node: Node | None) -> re.Match:
+    """The pattern matched against the node's text, or an error naming what was found."""
     text = node.text(strip=True) if node is not None else ""
     if not (match := pattern.fullmatch(text)):
         raise PageFormatError(f"expected {pattern.pattern!r}, found {text!r}")
-    return match.group(1)
+    return match

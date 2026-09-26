@@ -22,4 +22,5 @@ def test_gathers_orders_charged_since():
         "D01-0000004-0000004": (0, 1),  # digital: not in the export
         "112-0000005-0000005": (1, 1),
         "111-0000006-0000006": (1, 1),
+        "111-0000009-0000009": (1, 1),  # in Canadian dollars
     }

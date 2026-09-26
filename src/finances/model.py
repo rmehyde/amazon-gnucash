@@ -30,6 +30,7 @@ class Charge(BaseModel):
     card: str
     date: date
     amount: Decimal  # as Amazon shows it: negative is a charge, positive a refund
+    currency: str  # the symbol Amazon shows, e.g. "$" or "CA$"
     pending: bool
 
 

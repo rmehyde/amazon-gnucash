@@ -36,8 +36,10 @@ def main() -> None:
 def check(order: Order) -> tuple[str, str]:
     if not order.items:
         return "not in export", ""
-    if currencies := {item.currency for item in order.items} - {"USD"}:
-        return "not in USD", ", ".join(sorted(currencies))
+    if any(item.currency != "USD" for item in order.items) or any(
+        charge.currency != "$" for charge in order.charges
+    ):
+        return "not in USD", ""
     itemized = sum(item.total for item in order.items)
     charged = -sum(charge.amount for charge in order.charges if charge.amount < 0)
     if itemized == charged:
