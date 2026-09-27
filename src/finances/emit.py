@@ -7,6 +7,7 @@ from decimal import Decimal
 from pathlib import Path
 
 from finances.config import Config
+from finances.model import Item
 from finances.reconcile import Transaction
 
 HEADER = ["Date", "Transaction ID", "Description", "Notes", "Account", "Memo", "Amount"]
@@ -44,11 +45,16 @@ def _rows(transaction: Transaction, number: int, config: Config) -> list[list]:
     return [
         [charge.date, number, description, payer, transaction.account, "", _money(charge.amount)],
         *(
-            [charge.date, number, "", "", config.uncategorized, item.name,
+            [charge.date, number, "", "", config.uncategorized, _memo(item),
              _money(-item.total if refund else item.total)]
             for item in items
         ),
     ]
+
+
+def _memo(item: Item) -> str:
+    """The product, after Amazon's department for it: "Paperback: The Paper Moon"."""
+    return f"{item.department}: {item.name}" if item.department else item.name
 
 
 def _slug(account: str) -> str:

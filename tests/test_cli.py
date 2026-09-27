@@ -30,19 +30,19 @@ def test_writes_an_import_per_account(written):
         "amazon_20260901-20261231_visa.csv": """\
 Date,Transaction ID,Description,Notes,Account,Memo,Amount
 2026-09-02,1,Amazon Order 111-0000001-0000001 (1 item),PAT DOE,Liabilities:Visa,,-8.70
-2026-09-02,1,,,Expenses:Amazon Uncategorized,"Wooden Spoons, 4 Pack",8.70
+2026-09-02,1,,,Expenses:Amazon Uncategorized,"Kitchen: Wooden Spoons, 4 Pack",8.70
 2026-09-04,2,Amazon Order 112-0000002-0000002 (1 item),PAT DOE,Liabilities:Visa,,-21.33
-2026-09-04,2,,,Expenses:Amazon Uncategorized,Sink Strainer Basket,21.33
+2026-09-04,2,,,Expenses:Amazon Uncategorized,Tools & Home Improvement: Sink Strainer Basket,21.33
 2026-09-07,3,Amazon Order 112-0000002-0000002 (1 item),PAT DOE,Liabilities:Visa,,-15.00
-2026-09-07,3,,,Expenses:Amazon Uncategorized,"Magnetic Hooks, 4 Pack",15.00
+2026-09-07,3,,,Expenses:Amazon Uncategorized,"Tools & Home Improvement: Magnetic Hooks, 4 Pack",15.00
 2026-09-20,4,Amazon Order 111-0000011-0000011 (2 items),PAT DOE,Liabilities:Visa,,-37.00
-2026-09-20,4,,,Expenses:Amazon Uncategorized,Stovetop Tea Kettle,27.21
-2026-09-20,4,,,Expenses:Amazon Uncategorized,Kettle Descaler,9.79
+2026-09-20,4,,,Expenses:Amazon Uncategorized,Kitchen: Stovetop Tea Kettle,27.21
+2026-09-20,4,,,Expenses:Amazon Uncategorized,Kitchen: Kettle Descaler,9.79
 """,
         "amazon_20260901-20261231_amazon-balance.csv": """\
 Date,Transaction ID,Description,Notes,Account,Memo,Amount
 2026-09-15,1,Amazon Refund 111-0000003-0000003 (1 item),PAT DOE,Assets:Amazon Balance,,195.92
-2026-09-15,1,,,Expenses:Amazon Uncategorized,Standing Desk Frame,-195.92
+2026-09-15,1,,,Expenses:Amazon Uncategorized,Office Products: Standing Desk Frame,-195.92
 """,
     }
 
