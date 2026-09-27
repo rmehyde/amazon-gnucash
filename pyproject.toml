@@ -11,7 +11,7 @@ dependencies = [
 ]
 
 [project.scripts]
-finances = "finances.cli:main"
+amazon-transactions = "finances.cli:main"
 
 [dependency-groups]
 dev = [

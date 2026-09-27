@@ -1,6 +1,6 @@
 """Turn Amazon order history and transactions into GnuCash imports.
 
-    uv run finances FOLDER --since 2026-09-01
+    amazon-transactions FOLDER --since 2026-09-01
 
 FOLDER holds, anywhere below it, Amazon's "Order History.csv" exports and saved
 transaction pages: .html files with "transaction" somewhere in their path.
