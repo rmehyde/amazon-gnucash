@@ -21,11 +21,12 @@ def main() -> None:
     parser.add_argument("pages", type=Path, help="folder of saved transaction pages")
     parser.add_argument("exports", type=Path, nargs="+", help="order history CSVs")
     parser.add_argument("--since", type=date.fromisoformat, required=True)
+    parser.add_argument("--until", type=date.fromisoformat, default=date.today())
     args = parser.parse_args()
 
     items = [item for export in args.exports for item in load_items(export)]
     outcomes = Counter[str]()
-    for order in gather(items, load_charges(args.pages), args.since):
+    for order in gather(items, load_charges(args.pages), args.since, args.until):
         outcome, detail = check(order)
         outcomes[outcome] += 1
         if outcome != "adds up":

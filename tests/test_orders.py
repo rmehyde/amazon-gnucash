@@ -8,19 +8,19 @@ from finances.parse.transactions import parse_page
 FIXTURES = Path(__file__).parent / "fixtures"
 
 
-def test_gathers_orders_charged_since():
+def test_gathers_orders_charged_in_window():
     items = load_items(FIXTURES / "order-history.csv")
     charges = parse_page((FIXTURES / "transactions.html").read_text())
 
-    orders = gather(items, charges, since=date(2026, 1, 1))
+    orders = gather(items, charges, since=date(2026, 1, 1), until=date(2026, 9, 25))
 
-    # Leaves out the 2019 order (never charged here) and the one charged in 2025.
+    # Leaves out the 2019 order (never charged here), the one charged in 2025,
+    # and the one charged on September 26.
     assert {o.order_id: (o.kind, len(o.items), len(o.charges)) for o in orders} == {
         "111-0000001-0000001": ("retail order", 1, 1),
         "112-0000002-0000002": ("retail order", 2, 2),  # split across two charges
         "111-0000003-0000003": ("retail order", 1, 2),  # charged, then refunded
         "D01-0000004-0000004": ("digital order", 0, 1),
-        "112-0000005-0000005": ("retail order", 1, 1),
         "111-0000006-0000006": ("retail order", 1, 1),
         "111-0000009-0000009": ("retail order", 1, 1),  # in Canadian dollars
         "00000000-0000-4000-8000-000000000010": ("in-store purchase", 0, 1),  # Whole Foods
