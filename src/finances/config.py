@@ -11,6 +11,7 @@ class Config(BaseModel):
 
     accounts: dict[str, str]  # payment method as Amazon shows it -> GnuCash account
     skip: frozenset[str] = frozenset()  # payment methods to leave out entirely
+    skip_merchants: frozenset[str] = frozenset()  # merchants to leave out, by name start
     uncategorized: str  # the GnuCash account items go to until categorized
     payers: dict[str, str] = {}  # Amazon login -> who paid, as written in Notes
 

@@ -72,11 +72,15 @@ def _dated_items(section: Node):
 
 def _charge(item: Node, login: str, day: date, pending: bool) -> Charge:
     sign, currency, digits = _match(AMOUNT, item.css_first(".a-span-last span")).groups()
-    order = item.css_first(".a-span12 > *")  # a link, or text for in-store purchases
+    # The order (a link, or text for in-store purchases), then usually the merchant.
+    rows = item.css(".a-span12 > *")
+    if not 1 <= len(rows) <= 2:
+        raise PageFormatError(f"expected an order and a merchant, found {len(rows)} rows")
     return Charge(
         login=login,
-        order_id=_text(ORDER, order),
-        link=order.attributes.get("href"),
+        order_id=_text(ORDER, rows[0]),
+        link=rows[0].attributes.get("href"),
+        merchant=rows[1].text(strip=True) if len(rows) == 2 else None,
         card=_text(CARD, item.css_first(".a-span9 span")),
         date=day,
         amount=Decimal(sign + digits.replace(",", "")),

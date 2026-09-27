@@ -9,7 +9,7 @@ from finances.model import Charge, Item, Order
 from finances.orders import gather
 from finances.parse.export import load_items
 from finances.parse.transactions import parse_page
-from finances.reconcile import Escalated, Reason, Resolved, Skipped, reconcile
+from finances.reconcile import Reason, Resolved, reconcile
 
 FIXTURES = Path(__file__).parent / "fixtures"
 CONFIG = load_config(FIXTURES / "amazon.toml")
@@ -71,7 +71,7 @@ def item(name, total, quantity=1):
     )
 
 
-def charge(amount, day=1, card="Visa ****4242"):
+def charge(amount, day=1, card="Visa ****4242", merchant="Amazon.com"):
     return Charge(
         login="Pat",
         order_id="O",
@@ -81,6 +81,7 @@ def charge(amount, day=1, card="Visa ****4242"):
         pending=False,
         currency="$",
         link=None,
+        merchant=merchant,
     )
 
 
@@ -105,6 +106,7 @@ def charge(amount, day=1, card="Visa ****4242"):
             Reason.SPLIT_PAYMENT,
         ),
         ([item("Pen", "2.00")], [charge("-2.00", card="Discover ****6011")], Reason.UNMAPPED_CARD),
+        ([], [charge("-2.00", merchant="Amazon Fresh 1234")], Reason.SKIPPED_MERCHANT),
         (
             [item("Pen", "2.00"), item("Ink", "3.00")],
             [charge("-2.00"), charge("-3.00", card="Mastercard ****5555")],
@@ -112,10 +114,10 @@ def charge(amount, day=1, card="Visa ****4242"):
         ),
     ],
 )
-def test_resolves_only_orders_with_one_fit(items, charges, expected):
+def test_decides_small_orders(items, charges, expected):
     result = reconcile(Order(order_id="O", items=items, charges=charges), CONFIG)
 
     if expected is Resolved:
         assert isinstance(result, Resolved)
     else:
-        assert isinstance(result, Escalated) and result.reason == expected
+        assert not isinstance(result, Resolved) and result.reason == expected

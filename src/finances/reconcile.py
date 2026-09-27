@@ -15,6 +15,7 @@ BUDGET = 100_000  # item subsets to try on one order before giving up
 
 
 class Reason(StrEnum):
+    SKIPPED_MERCHANT = "from a skipped merchant"
     SKIPPED_CARD = "on a skipped card"
     PENDING = "has a pending charge"
     PARTLY_SKIPPED = "partly on a skipped card"
@@ -27,7 +28,7 @@ class Reason(StrEnum):
     TOO_COMPLEX = "too many ways to check"
 
 
-SKIPS = {Reason.SKIPPED_CARD, Reason.PENDING}  # left out quietly, not escalated
+SKIPS = {Reason.SKIPPED_MERCHANT, Reason.SKIPPED_CARD, Reason.PENDING}  # left out quietly, not escalated
 
 
 class Transaction(BaseModel):
@@ -83,6 +84,11 @@ def _require(condition: object, reason: Reason) -> None:
 def _attribute(order: Order, config: Config) -> tuple[Transaction, ...]:
     charges = order.charges
     cards = {charge.card for charge in charges}
+    skipped_merchants = tuple(config.skip_merchants)
+    _require(
+        not all((c.merchant or "").startswith(skipped_merchants) for c in charges),
+        Reason.SKIPPED_MERCHANT,
+    )
     _require(not cards <= config.skip, Reason.SKIPPED_CARD)
     _require(not cards & config.skip, Reason.PARTLY_SKIPPED)
     _require(not any(charge.pending for charge in charges), Reason.PENDING)

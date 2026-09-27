@@ -34,6 +34,7 @@ class Charge(BaseModel):
     amount: Decimal  # as Amazon shows it: negative is a charge, positive a refund
     currency: str  # the symbol Amazon shows, e.g. "$" or "CA$"
     link: str | None  # to the order on Amazon; in-store purchases have none
+    merchant: str | None  # who was paid, e.g. "Whole Foods FTG 10000", when shown
     pending: bool
 
 

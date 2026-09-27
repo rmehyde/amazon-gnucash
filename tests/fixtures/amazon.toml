@@ -1,5 +1,6 @@
 uncategorized = "Expenses:Amazon Uncategorized"
 skip = ["Mastercard ****5555"]
+skip_merchants = ["Amazon Fresh"]
 
 [payers]
 Pat = "PAT DOE"
