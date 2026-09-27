@@ -10,6 +10,9 @@ dependencies = [
     "selectolax>=0.4.12",
 ]
 
+[project.scripts]
+finances = "finances.cli:main"
+
 [dependency-groups]
 dev = [
     "pytest>=9.1.1",

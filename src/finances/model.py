@@ -46,6 +46,10 @@ class Order(BaseModel):
     charges: tuple[Charge, ...]
 
     @property
+    def login(self) -> str:
+        return self.charges[0].login
+
+    @property
     def kind(self) -> str:
         if self.order_id.startswith("D01-"):
             return "digital order"
