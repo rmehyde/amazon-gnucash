@@ -9,6 +9,7 @@ somewhere in their path.
 
 import argparse
 import logging
+import os
 from collections import Counter
 from datetime import date
 from pathlib import Path
@@ -24,6 +25,11 @@ from finances.report import write_report
 Outcome = Resolved | Skipped | Escalated
 
 log = logging.getLogger(__name__)
+CONFIG = (
+    Path(os.environ.get("XDG_CONFIG_HOME") or Path.home() / ".config")
+    / "amazon-transactions"
+    / "config.toml"
+)
 
 
 def main() -> None:
@@ -33,9 +39,7 @@ def main() -> None:
     parser.add_argument("folder", type=Path, help="where to find the Amazon data")
     parser.add_argument("--since", type=date.fromisoformat, required=True)
     parser.add_argument("--until", type=date.fromisoformat, default=date.today())
-    parser.add_argument(
-        "--config", type=Path, default=Path.home() / "Documents/Finances/amazon.toml"
-    )
+    parser.add_argument("--config", type=Path, default=CONFIG, help="default: %(default)s")
     parser.add_argument("--out", type=Path, default=Path("."), help="folder for the CSVs")
     args = parser.parse_args()
     logging.basicConfig(level=logging.INFO, format="%(message)s")
