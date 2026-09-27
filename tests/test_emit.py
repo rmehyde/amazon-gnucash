@@ -6,17 +6,35 @@ from finances.emit import shorten
 @pytest.mark.parametrize(
     "name, short",
     [
-        ("Magnetic Hooks, 4 Pack", "Magnetic Hooks"),
-        ("Shaving Cream - Sensitive Skin, 7 oz", "Shaving Cream"),
-        ("Desk Lamp – Dimmable", "Desk Lamp"),  # en dash
-        ("Brightside Micellar Water with Salicylic Acid", "Brightside Micellar Water"),
-        ("Case WITH Strap", "Case"),
-        ("Wireless Earbuds | Bluetooth 5.3", "Wireless Earbuds"),
-        ("Q-Tips Swabs, Size 375", "Q-Tips Swabs"),  # a dash inside a word stays
-        ("Sink Strainer Basket", "Sink Strainer Basket"),
-        ("Wool Socks without Seams", "Wool Socks without Seams"),  # not "with"
-        ("With Love, a Novel", "With Love"),  # cutting at "With" would leave nothing
+        (
+            "Acme, Precise Refillable & Retractable Rolling Ball Pens, Extra Fine Point",
+            "Acme, Precise Refillable & Retractable Rolling Ball Pens",
+        ),
+        (
+            "Stainless Steel Pour Over Kettle for Coffee and Tea - 1.2 Liter",
+            "Stainless Steel Pour Over Kettle for Coffee and Tea",
+        ),
+        (
+            "Brightside Micellar Cleansing Water for All Skin Types with Salicylic Acid",
+            "Brightside Micellar Cleansing Water for All Skin Types",
+        ),
+        (
+            "Wireless Noise Cancelling Over-Ear Headphones | Bluetooth 5.3",
+            "Wireless Noise Cancelling Over-Ear Headphones",
+        ),
+        # Dashes inside words, and "without", aren't cuts.
+        (
+            "Ceramic Non-Stick Frying Pan Set of Three Pieces, Oven-Safe",
+            "Ceramic Non-Stick Frying Pan Set of Three Pieces",
+        ),
+        (
+            "Merino Wool Hiking Socks for Men and Women without Seams",
+            "Merino Wool Hiking Socks for Men and Women without Seams",
+        ),
+        # Names this short are already the product.
+        ("Magnetic Hooks, 4 Pack", "Magnetic Hooks, 4 Pack"),
+        ("Hero with a Thousand Faces", "Hero with a Thousand Faces"),
     ],
 )
-def test_shortens_names_to_the_product(name, short):
+def test_shortens_long_names_to_the_product(name, short):
     assert shorten(name) == short

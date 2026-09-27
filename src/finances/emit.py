@@ -14,6 +14,7 @@ HEADER = ["Date", "Transaction ID", "Description", "Notes", "Account", "Memo", "
 # Where a product's name gives way to its sales pitch: "Magnetic Hooks, 4 Pack".
 # A dash only counts after a space, so "Wi-Fi" and "4-Pack" stay whole.
 PITCH = re.compile(r"\s*[,|]|\s+[\-‐‑‒–—―]|\s*\bwith\b", re.IGNORECASE)
+SHORT = 45  # characters a name keeps before it can be cut
 
 
 def write_imports(
@@ -56,8 +57,8 @@ def _rows(transaction: Transaction, number: int, config: Config) -> list[list]:
 
 
 def shorten(name: str) -> str:
-    """The name up to its first comma, spaced dash, pipe or "with" that leaves something."""
-    cuts = (match.start() for match in PITCH.finditer(name) if match.start() > 0)
+    """The name up to its first comma, spaced dash, pipe or "with" past SHORT characters."""
+    cuts = (match.start() for match in PITCH.finditer(name) if match.start() >= SHORT)
     return name[: next(cuts, len(name))]
 
 
