@@ -13,7 +13,8 @@ from finances.emit import write_imports
 from finances.orders import gather
 from finances.parse.export import load_items
 from finances.parse.transactions import load_charges
-from finances.reconcile import Escalated, Reason, Resolved, Skipped, reconcile
+from finances.reconcile import Escalated, Resolved, Skipped, reconcile
+from finances.report import write_report
 
 Outcome = Resolved | Skipped | Escalated
 
@@ -40,10 +41,8 @@ def main() -> None:
                 tally["resolved"] += 1
             case Skipped(reason=reason):
                 tally[f"skipped: {reason}"] += 1
-            case Escalated(order=order, reason=reason):
-                why = f"{reason} ({order.kind})" if reason is Reason.NOT_IN_EXPORT else reason
-                tally[f"escalated: {why}"] += 1
-                print(f"{order.login}  {order.order_id}  {why}")
+            case Escalated():
+                tally[f"escalated: {outcome.why}"] += 1
     for label, count in sorted(tally.items()):
         print(f"{count:4}  {label}")
     for path in paths:
@@ -65,4 +64,6 @@ def run(
         for transaction in outcome.transactions
         if since <= transaction.charge.date <= until
     ]
-    return outcomes, write_imports(transactions, config, out)
+    escalations = [outcome for outcome in outcomes if isinstance(outcome, Escalated)]
+    report = write_report(escalations, out / "escalations.html", since, until)
+    return outcomes, [*write_imports(transactions, config, out), report]

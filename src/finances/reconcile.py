@@ -53,6 +53,12 @@ class Escalated(BaseModel):
     order: Order
     reason: Reason
 
+    @property
+    def why(self) -> str:
+        if self.reason is Reason.NOT_IN_EXPORT:
+            return f"{self.reason} ({self.order.kind})"
+        return self.reason
+
 
 def reconcile(order: Order, config: Config) -> Resolved | Skipped | Escalated:
     try:
