@@ -27,7 +27,7 @@ def test_writes_an_import_per_account(written):
     # The desk's August charge is left out: its order is in September's run only
     # for the refund, and the charge belongs to August's run.
     assert {name: text for name, text in written.items() if name.endswith(".csv")} == {
-        "visa.csv": """\
+        "amazon_20260901-20261231_visa.csv": """\
 Date,Transaction ID,Description,Notes,Account,Memo,Amount
 2026-09-02,1,Amazon Order 111-0000001-0000001 (1 item),PAT DOE,Liabilities:Visa,,-8.70
 2026-09-02,1,,,Expenses:Amazon Uncategorized,"Wooden Spoons, 4 Pack",8.70
@@ -39,7 +39,7 @@ Date,Transaction ID,Description,Notes,Account,Memo,Amount
 2026-09-20,4,,,Expenses:Amazon Uncategorized,Stovetop Tea Kettle,27.21
 2026-09-20,4,,,Expenses:Amazon Uncategorized,Kettle Descaler,9.79
 """,
-        "amazon-balance.csv": """\
+        "amazon_20260901-20261231_amazon-balance.csv": """\
 Date,Transaction ID,Description,Notes,Account,Memo,Amount
 2026-09-15,1,Amazon Refund 111-0000003-0000003 (1 item),PAT DOE,Assets:Amazon Balance,,195.92
 2026-09-15,1,,,Expenses:Amazon Uncategorized,Standing Desk Frame,-195.92
@@ -48,7 +48,7 @@ Date,Transaction ID,Description,Notes,Account,Memo,Amount
 
 
 def test_reports_orders_to_do_by_hand(written):
-    page = HTMLParser(written["escalations.html"])
+    page = HTMLParser(written["amazon_20260901-20261231_escalations.html"])
 
     # Pending and skipped orders aren't listed; the rest are, by login, then date.
     assert [

@@ -13,12 +13,12 @@ HEADER = ["Date", "Transaction ID", "Description", "Notes", "Account", "Memo", "
 
 
 def write_imports(
-    transactions: list[Transaction], config: Config, folder: Path
+    transactions: list[Transaction], config: Config, folder: Path, prefix: str
 ) -> list[Path]:
     by_account = defaultdict(list)
     for transaction in transactions:
         by_account[transaction.account].append(transaction)
-    paths = {account: folder / f"{_slug(account)}.csv" for account in by_account}
+    paths = {account: folder / f"{prefix}{_slug(account)}.csv" for account in by_account}
     if len(set(paths.values())) < len(paths):
         raise ValueError(f"accounts would share a file name: {sorted(paths)}")
 
