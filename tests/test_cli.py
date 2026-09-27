@@ -85,13 +85,13 @@ def test_reports_orders_to_do_by_hand(written):
 
 def test_finds_inputs_anywhere_below_the_folder(tmp_path):
     for path in [
-        "sam/transactions-pages/1.html",  # "transaction" in a folder name
-        "pat/my-transactions-2.html",  # or in the file name
-        "sam/Your Amazon Orders/Order History.csv",
+        "pat/transactions-pages/1.html",  # "transaction" in a folder name
+        "sam/my-transactions-2.html",  # or in the file name
         "pat/Your Amazon Orders/Order History.csv",
-        "sam/Your Amazon Orders/Digital Content Orders.csv",
-        "sam/Your Amazon Orders/Media/cover.html",  # none of them
-        "sam/Your Amazon Orders/Cart History.csv",
+        "sam/Your Amazon Orders/Order History.csv",
+        "pat/Your Amazon Orders/Digital Content Orders.csv",
+        "pat/Your Amazon Orders/Media/cover.html",  # none of them
+        "pat/Your Amazon Orders/Cart History.csv",
     ]:
         (tmp_path / path).parent.mkdir(parents=True, exist_ok=True)
         (tmp_path / path).touch()
@@ -99,12 +99,12 @@ def test_finds_inputs_anywhere_below_the_folder(tmp_path):
     found = find_inputs(tmp_path)
 
     assert [[p.relative_to(tmp_path).as_posix() for p in paths] for paths in found] == [
-        ["pat/my-transactions-2.html", "sam/transactions-pages/1.html"],
+        ["pat/transactions-pages/1.html", "sam/my-transactions-2.html"],
         [
             "pat/Your Amazon Orders/Order History.csv",
             "sam/Your Amazon Orders/Order History.csv",
         ],
-        ["sam/Your Amazon Orders/Digital Content Orders.csv"],
+        ["pat/Your Amazon Orders/Digital Content Orders.csv"],
     ]
 
 
