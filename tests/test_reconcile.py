@@ -7,7 +7,7 @@ import pytest
 from finances.config import load_config
 from finances.model import Charge, Item, Order
 from finances.orders import gather
-from finances.parse.export import load_items
+from finances.parse.export import load_retail_items
 from finances.parse.transactions import parse_page
 from finances.reconcile import Reason, Resolved, reconcile
 
@@ -26,7 +26,7 @@ def outcome(result):
 
 
 def test_reconciles_orders():
-    items = load_items(FIXTURES / "Order History.csv")
+    items = load_retail_items(FIXTURES / "Order History.csv")
     charges = parse_page((FIXTURES / "transactions.html").read_text())
     orders = gather(items, charges, since=date(2026, 1, 1), until=date(2026, 12, 31))
 

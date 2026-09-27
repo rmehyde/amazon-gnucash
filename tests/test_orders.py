@@ -2,14 +2,14 @@ from datetime import date
 from pathlib import Path
 
 from finances.orders import gather
-from finances.parse.export import load_items
+from finances.parse.export import load_retail_items
 from finances.parse.transactions import parse_page
 
 FIXTURES = Path(__file__).parent / "fixtures"
 
 
 def test_gathers_orders_charged_in_window():
-    items = load_items(FIXTURES / "Order History.csv")
+    items = load_retail_items(FIXTURES / "Order History.csv")
     charges = parse_page((FIXTURES / "transactions.html").read_text())
 
     orders = gather(items, charges, since=date(2026, 1, 1), until=date(2026, 9, 25))

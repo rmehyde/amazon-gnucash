@@ -15,7 +15,7 @@ from pathlib import Path
 from finances.config import Config, load_config
 from finances.emit import write_imports
 from finances.orders import gather
-from finances.parse.export import load_items
+from finances.parse.export import load_retail_items
 from finances.parse.transactions import load_charges
 from finances.reconcile import Escalated, Resolved, Skipped, reconcile
 from finances.report import write_report
@@ -61,7 +61,7 @@ def run(
     folder: Path, config: Config, since: date, until: date, out: Path
 ) -> tuple[list[Outcome], list[Path]]:
     pages, exports = find_inputs(folder)
-    items = [item for export in exports for item in load_items(export)]
+    items = [item for export in exports for item in load_retail_items(export)]
     orders = gather(items, load_charges(pages), since, until)
     outcomes = [reconcile(order, config) for order in orders]
     # An order is checked against all its charges, but only those in the window are
