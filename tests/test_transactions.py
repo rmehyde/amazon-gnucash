@@ -1,4 +1,3 @@
-import shutil
 from datetime import date
 from decimal import Decimal
 from pathlib import Path
@@ -41,11 +40,8 @@ def test_parses_page():
     assert charge(whole_foods, date(2026, 9, 12), "-34.62", site=None) in charges
 
 
-def test_overlapping_pages_count_each_charge_once(tmp_path):
-    for name in ("first.html", "again.html"):
-        shutil.copy(FIXTURE, tmp_path / name)
-
-    assert sorted(load_charges(tmp_path), key=repr) == sorted(
+def test_overlapping_pages_count_each_charge_once():
+    assert sorted(load_charges([FIXTURE, FIXTURE]), key=repr) == sorted(
         parse_page(FIXTURE.read_text()), key=repr
     )
 

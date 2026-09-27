@@ -9,7 +9,7 @@ FIXTURES = Path(__file__).parent / "fixtures"
 
 
 def test_gathers_orders_charged_in_window():
-    items = load_items(FIXTURES / "order-history.csv")
+    items = load_items(FIXTURES / "Order History.csv")
     charges = parse_page((FIXTURES / "transactions.html").read_text())
 
     orders = gather(items, charges, since=date(2026, 1, 1), until=date(2026, 9, 25))

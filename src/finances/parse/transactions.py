@@ -21,15 +21,12 @@ class PageFormatError(ValueError):
     pass
 
 
-def load_charges(folder: Path) -> list[Charge]:
-    """Every charge across the pages in a folder.
+def load_charges(pages: list[Path]) -> list[Charge]:
+    """Every charge across the pages.
 
     Pages downloaded at different times overlap, so a charge counts as many times
     as it appears on any single page, not the sum across pages.
     """
-    pages = sorted(folder.glob("*.html"))
-    if not pages:
-        raise FileNotFoundError(f"no .html pages in {folder}")
     merged = Counter[Charge]()
     for page in pages:
         merged |= Counter(parse_page(page.read_text(encoding="utf-8")))

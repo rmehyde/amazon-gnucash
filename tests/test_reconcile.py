@@ -26,7 +26,7 @@ def outcome(result):
 
 
 def test_reconciles_orders():
-    items = load_items(FIXTURES / "order-history.csv")
+    items = load_items(FIXTURES / "Order History.csv")
     charges = parse_page((FIXTURES / "transactions.html").read_text())
     orders = gather(items, charges, since=date(2026, 1, 1), until=date(2026, 12, 31))
 

@@ -7,7 +7,7 @@ import pytest
 from finances.model import Item
 from finances.parse.export import ExportFormatError, load_items
 
-FIXTURE = Path(__file__).parent / "fixtures" / "order-history.csv"
+FIXTURE = Path(__file__).parent / "fixtures" / "Order History.csv"
 
 
 def test_loads_items():
