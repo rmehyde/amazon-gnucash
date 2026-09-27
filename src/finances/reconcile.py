@@ -1,7 +1,6 @@
 """Attribute each order's items to the charges and refunds Amazon made for it."""
 
 from collections import Counter
-from datetime import date
 from decimal import Decimal
 from enum import StrEnum
 from functools import reduce
@@ -35,10 +34,8 @@ class Transaction(BaseModel):
 
     model_config = ConfigDict(frozen=True)
 
-    order_id: str
-    date: date
+    charge: Charge
     account: str  # where the money came from, or went back to
-    amount: Decimal  # negative is a charge, positive a refund
     items: tuple[Item, ...]
 
 
@@ -94,13 +91,7 @@ def _attribute(order: Order, config: Config) -> tuple[Transaction, ...]:
     purchases = _fit(order.items, [c for c in charges if c.amount < 0], use_all=True)
     refunds = _fit(order.items, [c for c in charges if c.amount > 0], use_all=False)
     return tuple(
-        Transaction(
-            order_id=order.order_id,
-            date=charge.date,
-            account=config.accounts[charge.card],
-            amount=charge.amount,
-            items=items,
-        )
+        Transaction(charge=charge, account=config.accounts[charge.card], items=items)
         for charge, items in purchases + refunds
     )
 

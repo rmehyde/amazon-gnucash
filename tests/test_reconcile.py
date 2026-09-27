@@ -18,7 +18,10 @@ CONFIG = load_config(FIXTURES / "amazon.toml")
 def outcome(result):
     """What happened to an order, briefly: its transactions, or why there are none."""
     if isinstance(result, Resolved):
-        return [(t.date, t.account, t.amount, [i.name for i in t.items]) for t in result.transactions]
+        return [
+            (t.charge.date, t.account, t.charge.amount, [i.name for i in t.items])
+            for t in result.transactions
+        ]
     return type(result).__name__, result.reason
 
 
