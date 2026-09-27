@@ -80,6 +80,7 @@ def charge(amount, day=1, card="Visa ****4242"):
         amount=Decimal(amount),
         pending=False,
         currency="$",
+        link=None,
     )
 
 

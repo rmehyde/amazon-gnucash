@@ -33,6 +33,7 @@ class Charge(BaseModel):
     date: date
     amount: Decimal  # as Amazon shows it: negative is a charge, positive a refund
     currency: str  # the symbol Amazon shows, e.g. "$" or "CA$"
+    link: str | None  # to the order on Amazon; in-store purchases have none
     pending: bool
 
 
@@ -44,6 +45,10 @@ class Order(BaseModel):
     order_id: str
     items: tuple[Item, ...]  # empty when the order isn't in the export
     charges: tuple[Charge, ...]
+
+    @property
+    def link(self) -> str | None:
+        return next((charge.link for charge in self.charges if charge.link), None)
 
     @property
     def login(self) -> str:
