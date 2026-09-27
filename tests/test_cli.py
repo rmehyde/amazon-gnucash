@@ -89,28 +89,36 @@ def test_finds_inputs_anywhere_below_the_folder(tmp_path):
         "pat/my-transactions-2.html",  # or in the file name
         "sam/Your Amazon Orders/Order History.csv",
         "pat/Your Amazon Orders/Order History.csv",
-        "sam/Your Amazon Orders/Media/cover.html",  # neither
+        "sam/Your Amazon Orders/Digital Content Orders.csv",
+        "sam/Your Amazon Orders/Media/cover.html",  # none of them
         "sam/Your Amazon Orders/Cart History.csv",
     ]:
         (tmp_path / path).parent.mkdir(parents=True, exist_ok=True)
         (tmp_path / path).touch()
 
-    pages, exports = find_inputs(tmp_path)
+    found = find_inputs(tmp_path)
 
-    assert [p.relative_to(tmp_path).as_posix() for p in pages + exports] == [
-        "pat/my-transactions-2.html",
-        "sam/transactions-pages/1.html",
-        "pat/Your Amazon Orders/Order History.csv",
-        "sam/Your Amazon Orders/Order History.csv",
+    assert [[p.relative_to(tmp_path).as_posix() for p in paths] for paths in found] == [
+        ["pat/my-transactions-2.html", "sam/transactions-pages/1.html"],
+        [
+            "pat/Your Amazon Orders/Order History.csv",
+            "sam/Your Amazon Orders/Order History.csv",
+        ],
+        ["sam/Your Amazon Orders/Digital Content Orders.csv"],
     ]
 
 
-@pytest.mark.parametrize("missing", ["transaction pages", "order history exports"])
-def test_insists_on_both_kinds_of_input(tmp_path, missing):
-    if missing != "transaction pages":
-        (tmp_path / "transactions.html").touch()
-    if missing != "order history exports":
-        (tmp_path / "Order History.csv").touch()
+@pytest.mark.parametrize(
+    "missing", ["transaction pages", "order history exports", "digital order exports"]
+)
+def test_insists_on_every_kind_of_input(tmp_path, missing):
+    for kind, name in [
+        ("transaction pages", "transactions.html"),
+        ("order history exports", "Order History.csv"),
+        ("digital order exports", "Digital Content Orders.csv"),
+    ]:
+        if kind != missing:
+            (tmp_path / name).touch()
 
     with pytest.raises(FileNotFoundError, match=missing):
         find_inputs(tmp_path)

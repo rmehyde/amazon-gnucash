@@ -7,7 +7,7 @@ import pytest
 from finances.config import load_config
 from finances.model import Charge, Item, Order
 from finances.orders import gather
-from finances.parse.export import load_retail_items
+from finances.parse.export import load_digital_items, load_retail_items
 from finances.parse.transactions import parse_page
 from finances.reconcile import Reason, Resolved, reconcile
 
@@ -26,7 +26,10 @@ def outcome(result):
 
 
 def test_reconciles_orders():
-    items = load_retail_items(FIXTURES / "Order History.csv")
+    items = [
+        *load_retail_items(FIXTURES / "Order History.csv"),
+        *load_digital_items(FIXTURES / "Digital Content Orders.csv"),
+    ]
     charges = parse_page((FIXTURES / "transactions.html").read_text())
     orders = gather(items, charges, since=date(2026, 1, 1), until=date(2026, 12, 31))
 
@@ -50,7 +53,9 @@ def test_reconciles_orders():
                 ["Stovetop Tea Kettle", "Kettle Descaler"],
             ),
         ],
-        "D01-0000004-0000004": ("Escalated", Reason.NOT_IN_EXPORT),
+        "D01-0000004-0000004": [
+            (date(2026, 8, 22), "Liabilities:Visa", Decimal("-3.99"), ["The Paper Moon"]),
+        ],
         "112-0000005-0000005": ("Skipped", Reason.PENDING),
         "111-0000006-0000006": ("Skipped", Reason.SKIPPED_CARD),
         "111-0000009-0000009": ("Escalated", Reason.NOT_IN_USD),
