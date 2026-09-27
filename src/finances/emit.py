@@ -41,13 +41,15 @@ def _rows(transaction: Transaction, number: int, config: Config) -> list[list]:
     """The card's split, then a split per item that balances it."""
     charge, items = transaction.charge, transaction.items
     refund = charge.amount > 0
-    title = f"Amazon {'Refund' if refund else 'Order'} {charge.order_id}"
+    kind = "Amazon Refund" if refund else "Amazon"
+    order = f"{'Amazon Refund' if refund else 'Amazon Order'} {charge.order_id}"
     description = (
-        f"{shorten(items[0].name)} ({title})" if len(items) == 1 else f"{title} ({len(items)} items)"
+        f"{shorten(items[0].name)} ({kind})" if len(items) == 1 else f"{order} ({len(items)} items)"
     )
-    payer = config.payers.get(charge.login, charge.login)
+    # Who paid, where the card's own imports put it, then the order to look it up by.
+    notes = f"{config.payers.get(charge.login, charge.login)} | {order}"
     return [
-        [charge.date, number, description, payer, transaction.account, "", _money(charge.amount)],
+        [charge.date, number, description, notes, transaction.account, "", _money(charge.amount)],
         *(
             [charge.date, number, "", "", config.uncategorized, _memo(item),
              _money(-item.total if refund else item.total)]
