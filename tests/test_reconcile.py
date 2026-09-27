@@ -42,6 +42,14 @@ def test_reconciles_orders():
             (date(2026, 8, 28), "Liabilities:Visa", Decimal("-195.92"), ["Standing Desk Frame"]),
             (date(2026, 9, 15), "Assets:Amazon Balance", Decimal("195.92"), ["Standing Desk Frame"]),
         ],
+        "111-0000011-0000011": [
+            (
+                date(2026, 9, 20),
+                "Liabilities:Visa",
+                Decimal("-37.00"),
+                ["Stovetop Tea Kettle", "Kettle Descaler"],
+            ),
+        ],
         "D01-0000004-0000004": ("Escalated", Reason.NOT_IN_EXPORT),
         "112-0000005-0000005": ("Skipped", Reason.PENDING),
         "111-0000006-0000006": ("Skipped", Reason.SKIPPED_CARD),

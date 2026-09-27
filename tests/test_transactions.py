@@ -26,7 +26,7 @@ def charge(order_id, day, amount, pending=False, card="Visa ****4242", currency=
 def test_parses_page():
     charges = parse_page(FIXTURE.read_text())
 
-    assert len(charges) == 11
+    assert len(charges) == 12
     assert charge("112-0000005-0000005", date(2026, 9, 26), "-47.47", pending=True) in charges
     gift_card = "Amazon Gift Card"
     assert charge("111-0000003-0000003", date(2026, 9, 15), "+195.92", card=gift_card) in charges

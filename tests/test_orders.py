@@ -23,5 +23,6 @@ def test_gathers_orders_charged_in_window():
         "D01-0000004-0000004": ("digital order", 0, 1),
         "111-0000006-0000006": ("retail order", 1, 1),
         "111-0000009-0000009": ("retail order", 1, 1),  # in Canadian dollars
+        "111-0000011-0000011": ("retail order", 2, 1),
         "00000000-0000-4000-8000-000000000010": ("in-store purchase", 0, 1),  # Whole Foods
     }

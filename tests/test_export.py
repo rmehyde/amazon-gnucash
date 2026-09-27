@@ -13,7 +13,7 @@ FIXTURE = Path(__file__).parent / "fixtures" / "order-history.csv"
 def test_loads_items():
     items = load_items(FIXTURE)
 
-    assert len(items) == 9
+    assert len(items) == 11
     assert items[0] == Item(
         order_id="111-0000001-0000001",
         asin="B000000001",
