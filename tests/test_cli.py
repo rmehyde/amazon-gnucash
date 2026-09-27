@@ -29,12 +29,12 @@ def test_writes_an_import_per_account(written):
     assert {name: text for name, text in written.items() if name.endswith(".csv")} == {
         "amazon_20260901-20261231_visa.csv": """\
 Date,Transaction ID,Description,Notes,Account,Memo,Amount
-2026-09-02,1,"Amazon Order 111-0000001-0000001: Wooden Spoons, 4 Pack",PAT DOE,Liabilities:Visa,,-8.70
-2026-09-02,1,,,Expenses:Amazon Uncategorized,"Kitchen: Wooden Spoons, 4 Pack",8.70
+2026-09-02,1,Amazon Order 111-0000001-0000001: Wooden Spoons,PAT DOE,Liabilities:Visa,,-8.70
+2026-09-02,1,,,Expenses:Amazon Uncategorized,Kitchen: Wooden Spoons,8.70
 2026-09-04,2,Amazon Order 112-0000002-0000002: Sink Strainer Basket,PAT DOE,Liabilities:Visa,,-21.33
 2026-09-04,2,,,Expenses:Amazon Uncategorized,Tools & Home Improvement: Sink Strainer Basket,21.33
-2026-09-07,3,"Amazon Order 112-0000002-0000002: Magnetic Hooks, 4 Pack",PAT DOE,Liabilities:Visa,,-15.00
-2026-09-07,3,,,Expenses:Amazon Uncategorized,"Tools & Home Improvement: Magnetic Hooks, 4 Pack",15.00
+2026-09-07,3,Amazon Order 112-0000002-0000002: Magnetic Hooks,PAT DOE,Liabilities:Visa,,-15.00
+2026-09-07,3,,,Expenses:Amazon Uncategorized,Tools & Home Improvement: Magnetic Hooks,15.00
 2026-09-20,4,Amazon Order 111-0000011-0000011 (2 items),PAT DOE,Liabilities:Visa,,-37.00
 2026-09-20,4,,,Expenses:Amazon Uncategorized,Kitchen: Stovetop Tea Kettle,27.21
 2026-09-20,4,,,Expenses:Amazon Uncategorized,Kitchen: Kettle Descaler,9.79

@@ -11,6 +11,9 @@ from finances.model import Item
 from finances.reconcile import Transaction
 
 HEADER = ["Date", "Transaction ID", "Description", "Notes", "Account", "Memo", "Amount"]
+# Where a product's name gives way to its sales pitch: "Magnetic Hooks, 4 Pack".
+# A dash only counts after a space, so "Wi-Fi" and "4-Pack" stay whole.
+PITCH = re.compile(r"\s*[,|]|\s+[\-‐‑‒–—―]|\s*\bwith\b", re.IGNORECASE)
 
 
 def write_imports(
@@ -39,7 +42,7 @@ def _rows(transaction: Transaction, number: int, config: Config) -> list[list]:
     refund = charge.amount > 0
     title = f"Amazon {'Refund' if refund else 'Order'} {charge.order_id}"
     description = (
-        f"{title}: {items[0].name}" if len(items) == 1 else f"{title} ({len(items)} items)"
+        f"{title}: {shorten(items[0].name)}" if len(items) == 1 else f"{title} ({len(items)} items)"
     )
     payer = config.payers.get(charge.login, charge.login)
     return [
@@ -52,9 +55,16 @@ def _rows(transaction: Transaction, number: int, config: Config) -> list[list]:
     ]
 
 
+def shorten(name: str) -> str:
+    """The name up to its first comma, spaced dash, pipe or "with" that leaves something."""
+    cuts = (match.start() for match in PITCH.finditer(name) if match.start() > 0)
+    return name[: next(cuts, len(name))]
+
+
 def _memo(item: Item) -> str:
     """The product, after Amazon's department for it: "Paperback: The Paper Moon"."""
-    return f"{item.department}: {item.name}" if item.department else item.name
+    name = shorten(item.name)
+    return f"{item.department}: {name}" if item.department else name
 
 
 def _slug(account: str) -> str:
