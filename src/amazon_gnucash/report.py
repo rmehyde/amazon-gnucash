@@ -5,8 +5,8 @@ from html import escape
 from itertools import groupby
 from pathlib import Path
 
-from finances.model import Charge, Item
-from finances.reconcile import Escalated
+from amazon_gnucash.model import Charge, Item
+from amazon_gnucash.reconcile import Escalated
 
 STYLE = """
 :root { --ink: #1d1d1f; --muted: #6e6e73; --line: #d9d9de; --paper: #fff; --link: #0b62c4; }

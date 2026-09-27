@@ -3,7 +3,7 @@ from pathlib import Path
 import pytest
 from pydantic import ValidationError
 
-from finances.config import load_config
+from amazon_gnucash.config import load_config
 
 FIXTURE = Path(__file__).parent / "fixtures" / "amazon.toml"
 

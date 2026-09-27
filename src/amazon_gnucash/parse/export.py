@@ -5,7 +5,7 @@ from pathlib import Path
 
 import polars as pl
 
-from finances.model import Item
+from amazon_gnucash.model import Item
 
 RETAIL = {
     "Order ID": "order_id",

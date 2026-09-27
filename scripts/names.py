@@ -1,14 +1,14 @@
 """Show how product names shorten, shortest first, to spot bad cuts.
 
-    uv run --project ~/Projects/finances ~/Projects/finances/scripts/names.py FOLDER
+    uv run --project ~/Projects/amazon-gnucash ~/Projects/amazon-gnucash/scripts/names.py FOLDER
 """
 
 import sys
 from pathlib import Path
 
-from finances.cli import find_inputs
-from finances.emit import shorten
-from finances.parse.export import load_digital_items, load_retail_items
+from amazon_gnucash.cli import find_inputs
+from amazon_gnucash.emit import shorten
+from amazon_gnucash.parse.export import load_digital_items, load_retail_items
 
 _, retail, digital = find_inputs(Path(sys.argv[1]))
 names = {item.name for export in retail for item in load_retail_items(export)} | {

@@ -4,8 +4,8 @@ from pathlib import Path
 import pytest
 from selectolax.parser import HTMLParser
 
-from finances.cli import find_inputs, run
-from finances.config import load_config
+from amazon_gnucash.cli import find_inputs, run
+from amazon_gnucash.config import load_config
 
 FIXTURES = Path(__file__).parent / "fixtures"
 

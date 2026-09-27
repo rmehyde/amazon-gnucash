@@ -1,7 +1,7 @@
 from collections import defaultdict
 from datetime import date
 
-from finances.model import Charge, Item, Order
+from amazon_gnucash.model import Charge, Item, Order
 
 
 def gather(

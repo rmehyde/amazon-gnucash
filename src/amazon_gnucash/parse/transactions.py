@@ -8,7 +8,7 @@ from pathlib import Path
 
 from selectolax.parser import HTMLParser, Node
 
-from finances.model import Charge
+from amazon_gnucash.model import Charge
 
 SECTIONS = {"In Progress": True, "Completed": False}  # heading -> pending
 AMOUNT = re.compile(r"([+-])(\D+)([\d,]+\.\d\d)")

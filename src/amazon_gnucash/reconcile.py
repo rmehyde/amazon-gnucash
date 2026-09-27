@@ -8,8 +8,8 @@ from operator import or_
 
 from pydantic import BaseModel, ConfigDict
 
-from finances.config import Config
-from finances.model import Charge, Item, Order
+from amazon_gnucash.config import Config
+from amazon_gnucash.model import Charge, Item, Order
 
 BUDGET = 100_000  # item subsets to try on one order before giving up
 

@@ -1,9 +1,9 @@
 from datetime import date
 from pathlib import Path
 
-from finances.orders import gather
-from finances.parse.export import load_retail_items
-from finances.parse.transactions import parse_page
+from amazon_gnucash.orders import gather
+from amazon_gnucash.parse.export import load_retail_items
+from amazon_gnucash.parse.transactions import parse_page
 
 FIXTURES = Path(__file__).parent / "fixtures"
 

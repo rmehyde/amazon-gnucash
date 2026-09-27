@@ -4,12 +4,12 @@ from pathlib import Path
 
 import pytest
 
-from finances.config import load_config
-from finances.model import Charge, Item, Order
-from finances.orders import gather
-from finances.parse.export import load_digital_items, load_retail_items
-from finances.parse.transactions import parse_page
-from finances.reconcile import Reason, Resolved, reconcile
+from amazon_gnucash.config import load_config
+from amazon_gnucash.model import Charge, Item, Order
+from amazon_gnucash.orders import gather
+from amazon_gnucash.parse.export import load_digital_items, load_retail_items
+from amazon_gnucash.parse.transactions import parse_page
+from amazon_gnucash.reconcile import Reason, Resolved, reconcile
 
 FIXTURES = Path(__file__).parent / "fixtures"
 CONFIG = load_config(FIXTURES / "amazon.toml")

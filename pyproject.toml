@@ -1,7 +1,7 @@
 [project]
-name = "finances"
+name = "amazon-gnucash"
 version = "0.1.0"
-description = "Add your description here"
+description = "Turn Amazon order history into GnuCash imports, split per item"
 readme = "README.md"
 requires-python = ">=3.11"
 dependencies = [
@@ -11,7 +11,7 @@ dependencies = [
 ]
 
 [project.scripts]
-amazon-transactions = "finances.cli:main"
+amazon-gnucash = "amazon_gnucash.cli:main"
 
 [dependency-groups]
 dev = [

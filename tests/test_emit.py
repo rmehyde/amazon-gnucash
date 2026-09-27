@@ -1,6 +1,6 @@
 import pytest
 
-from finances.emit import shorten
+from amazon_gnucash.emit import shorten
 
 
 @pytest.mark.parametrize(

@@ -1,6 +1,6 @@
 """Turn Amazon order history and transactions into GnuCash imports.
 
-    amazon-transactions FOLDER --since 2026-09-01
+    amazon-gnucash FOLDER --since 2026-09-01
 
 FOLDER holds, anywhere below it, Amazon's "Order History.csv" and "Digital Content
 Orders.csv" exports and saved transaction pages: .html files with "transaction"
@@ -14,20 +14,20 @@ from collections import Counter
 from datetime import date
 from pathlib import Path
 
-from finances.config import Config, load_config
-from finances.emit import write_imports
-from finances.orders import gather
-from finances.parse.export import load_digital_items, load_retail_items
-from finances.parse.transactions import load_charges
-from finances.reconcile import Escalated, Resolved, Skipped, reconcile
-from finances.report import write_report
+from amazon_gnucash.config import Config, load_config
+from amazon_gnucash.emit import write_imports
+from amazon_gnucash.orders import gather
+from amazon_gnucash.parse.export import load_digital_items, load_retail_items
+from amazon_gnucash.parse.transactions import load_charges
+from amazon_gnucash.reconcile import Escalated, Resolved, Skipped, reconcile
+from amazon_gnucash.report import write_report
 
 Outcome = Resolved | Skipped | Escalated
 
 log = logging.getLogger(__name__)
 CONFIG = (
     Path(os.environ.get("XDG_CONFIG_HOME") or Path.home() / ".config")
-    / "amazon-transactions"
+    / "amazon-gnucash"
     / "config.toml"
 )
 

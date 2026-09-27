@@ -4,8 +4,8 @@ from pathlib import Path
 import polars as pl
 import pytest
 
-from finances.model import Item
-from finances.parse.export import ExportFormatError, load_digital_items, load_retail_items
+from amazon_gnucash.model import Item
+from amazon_gnucash.parse.export import ExportFormatError, load_digital_items, load_retail_items
 
 FIXTURES = Path(__file__).parent / "fixtures"
 RETAIL = FIXTURES / "Order History.csv"

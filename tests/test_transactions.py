@@ -4,8 +4,8 @@ from pathlib import Path
 
 import pytest
 
-from finances.model import Charge
-from finances.parse.transactions import PageFormatError, load_charges, parse_page
+from amazon_gnucash.model import Charge
+from amazon_gnucash.parse.transactions import PageFormatError, load_charges, parse_page
 
 FIXTURE = Path(__file__).parent / "fixtures" / "transactions.html"
 

@@ -6,9 +6,9 @@ from collections import defaultdict
 from decimal import Decimal
 from pathlib import Path
 
-from finances.config import Config
-from finances.model import Item
-from finances.reconcile import Transaction
+from amazon_gnucash.config import Config
+from amazon_gnucash.model import Item
+from amazon_gnucash.reconcile import Transaction
 
 HEADER = ["Date", "Transaction ID", "Description", "Notes", "Account", "Memo", "Amount"]
 # Where a product's name gives way to its sales pitch: "Magnetic Hooks, 4 Pack".
