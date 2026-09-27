@@ -43,7 +43,7 @@ def _rows(transaction: Transaction, number: int, config: Config) -> list[list]:
     refund = charge.amount > 0
     title = f"Amazon {'Refund' if refund else 'Order'} {charge.order_id}"
     description = (
-        f"{title}: {shorten(items[0].name)}" if len(items) == 1 else f"{title} ({len(items)} items)"
+        f"{shorten(items[0].name)} ({title})" if len(items) == 1 else f"{title} ({len(items)} items)"
     )
     payer = config.payers.get(charge.login, charge.login)
     return [
