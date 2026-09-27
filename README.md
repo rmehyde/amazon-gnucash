@@ -28,7 +28,7 @@ Amazon account.
 ## Install
 
 ```sh
-uv tool install git+https://github.com/<you>/amazon-gnucash
+uv tool install git+https://github.com/rmehyde/amazon-gnucash
 ```
 
 ## Configure
@@ -42,7 +42,7 @@ skip_merchants = ["Whole Foods"]      # merchants to leave out, by name start
 
 [accounts]  # payment method, as Amazon shows it -> GnuCash account
 "American Express ****1005" = "Liabilities:Amex"
-"Amazon Gift Card" = "Assets:Amazon Balance"
+"Amazon Gift Card" = "Assets:Receivables:Amazon Balance"
 
 [payers]  # Amazon account -> who paid, written to each transaction's Notes
 Pat = "PAT DOE"
@@ -56,7 +56,7 @@ amazon-gnucash path/to/amazon-folder --since 2026-09-01 [--until 2026-09-30]
 
 This writes, into the current folder (or `--out`):
 
-- `amazon_20260901-20260930_<account>.csv`: one GnuCash import per account.
+- `amazon_20260901-20260930_<gnucash-account>.csv`: one GnuCash import per account.
 - `amazon_20260901-20260930_escalations.html`: the orders left for you to enter by
   hand, with links to them on Amazon and the reason each one needed a person.
 
