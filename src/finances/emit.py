@@ -37,9 +37,9 @@ def _rows(transaction: Transaction, number: int, config: Config) -> list[list]:
     """The card's split, then a split per item that balances it."""
     charge, items = transaction.charge, transaction.items
     refund = charge.amount > 0
+    title = f"Amazon {'Refund' if refund else 'Order'} {charge.order_id}"
     description = (
-        f"Amazon {'Refund' if refund else 'Order'} {charge.order_id}"
-        f" ({len(items)} item{'s' if len(items) != 1 else ''})"
+        f"{title}: {items[0].name}" if len(items) == 1 else f"{title} ({len(items)} items)"
     )
     payer = config.payers.get(charge.login, charge.login)
     return [
