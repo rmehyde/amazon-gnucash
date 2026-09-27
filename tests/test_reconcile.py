@@ -99,6 +99,11 @@ def charge(amount, day=1, card="Visa ****4242"):
         ([item("Pen", "2.00"), item("Ink", "3.00")], [charge("-2.00")], Reason.NO_FIT),
         # One row, two units shipped and charged separately: agreed to escalate.
         ([item("Pen", "4.00", quantity=2)], [charge("-2.00"), charge("-2.00")], Reason.NO_FIT),
+        (
+            [item("Pen", "31.97")],
+            [charge("-25.47"), charge("-6.50", card="Amazon Gift Card")],
+            Reason.SPLIT_PAYMENT,
+        ),
         ([item("Pen", "2.00")], [charge("-2.00", card="Discover ****6011")], Reason.UNMAPPED_CARD),
         (
             [item("Pen", "2.00"), item("Ink", "3.00")],

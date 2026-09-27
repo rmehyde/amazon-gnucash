@@ -22,6 +22,7 @@ class Reason(StrEnum):
     NOT_IN_USD = "not in USD"
     UNMAPPED_CARD = "unmapped card"
     NO_FIT = "items don't add up to the charges"
+    SPLIT_PAYMENT = "split between payment methods"
     AMBIGUOUS = "items fit the charges more than one way"
     TOO_COMPLEX = "too many ways to check"
 
@@ -94,7 +95,15 @@ def _attribute(order: Order, config: Config) -> tuple[Transaction, ...]:
     _require(cards <= config.accounts.keys(), Reason.UNMAPPED_CARD)
 
     # Every item was charged for; only some may have been refunded.
-    purchases = _fit(order.items, [c for c in charges if c.amount < 0], use_all=True)
+    charged = [c for c in charges if c.amount < 0]
+    try:
+        purchases = _fit(order.items, charged, use_all=True)
+    except _Unresolved as problem:
+        # Likely one shipment paid partly by gift card, which no item total matches.
+        split = len({(c.date, c.card) for c in charged}) > len({c.date for c in charged})
+        if problem.reason is Reason.NO_FIT and split:
+            raise _Unresolved(Reason.SPLIT_PAYMENT) from None
+        raise
     refunds = _fit(order.items, [c for c in charges if c.amount > 0], use_all=False)
     return tuple(
         Transaction(charge=charge, account=config.accounts[charge.card], items=items)
