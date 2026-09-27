@@ -12,6 +12,7 @@ class Config(BaseModel):
     accounts: dict[str, str]  # payment method as Amazon shows it -> GnuCash account
     skip: frozenset[str] = frozenset()  # payment methods to leave out entirely
     uncategorized: str  # the GnuCash account items go to until categorized
+    payers: dict[str, str] = {}  # Amazon login -> who paid, as written in Notes
 
     @model_validator(mode="after")
     def _skip_only_unmapped(self) -> "Config":

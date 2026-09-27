@@ -8,11 +8,14 @@ from collections import Counter
 from datetime import date
 from pathlib import Path
 
-from finances.config import load_config
+from finances.config import Config, load_config
+from finances.emit import write_imports
 from finances.orders import gather
 from finances.parse.export import load_items
 from finances.parse.transactions import load_charges
 from finances.reconcile import Escalated, Reason, Resolved, Skipped, reconcile
+
+Outcome = Resolved | Skipped | Escalated
 
 
 def main() -> None:
@@ -24,14 +27,14 @@ def main() -> None:
     parser.add_argument(
         "--config", type=Path, default=Path.home() / "Documents/Finances/amazon.toml"
     )
+    parser.add_argument("--out", type=Path, default=Path("."), help="folder for the CSVs")
     args = parser.parse_args()
 
-    config = load_config(args.config)
-    items = [item for export in args.exports for item in load_items(export)]
-    orders = gather(items, load_charges(args.pages), args.since, args.until)
-
+    outcomes, paths = run(
+        args.pages, args.exports, load_config(args.config), args.since, args.until, args.out
+    )
     tally = Counter[str]()
-    for outcome in (reconcile(order, config) for order in orders):
+    for outcome in outcomes:
         match outcome:
             case Resolved():
                 tally["resolved"] += 1
@@ -43,3 +46,23 @@ def main() -> None:
                 print(f"{order.login}  {order.order_id}  {why}")
     for label, count in sorted(tally.items()):
         print(f"{count:4}  {label}")
+    for path in paths:
+        print(f"wrote {path}")
+
+
+def run(
+    pages: Path, exports: list[Path], config: Config, since: date, until: date, out: Path
+) -> tuple[list[Outcome], list[Path]]:
+    items = [item for export in exports for item in load_items(export)]
+    orders = gather(items, load_charges(pages), since, until)
+    outcomes = [reconcile(order, config) for order in orders]
+    # An order is checked against all its charges, but only those in the window are
+    # written, so a charge from before `since` isn't imported a second time.
+    transactions = [
+        transaction
+        for outcome in outcomes
+        if isinstance(outcome, Resolved)
+        for transaction in outcome.transactions
+        if since <= transaction.charge.date <= until
+    ]
+    return outcomes, write_imports(transactions, config, out)

@@ -1,6 +1,9 @@
 uncategorized = "Expenses:Amazon Uncategorized"
 skip = ["Mastercard ****5555"]
 
+[payers]
+Pat = "PAT DOE"
+
 [accounts]
 "Visa ****4242" = "Liabilities:Visa"
 "Amazon Gift Card" = "Assets:Amazon Balance"
