@@ -14,7 +14,7 @@ HEADER = ["Date", "Transaction ID", "Description", "Notes", "Account", "Memo", "
 # Where a product's name gives way to its sales pitch: "Magnetic Hooks, 4 Pack".
 # A dash only counts after a space, so "Wi-Fi" and "4-Pack" stay whole.
 PITCH = re.compile(r"\s*[,|]|\s+[\-‐‑‒–—―]|\s*\bwith\b", re.IGNORECASE)
-SHORT = 45  # characters a name keeps before it can be cut
+SHORT = 33  # characters a name keeps before it can be cut
 
 
 def write_imports(
