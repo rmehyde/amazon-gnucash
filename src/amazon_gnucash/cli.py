@@ -3,8 +3,8 @@
     amazon-gnucash FOLDER --since 2026-09-01
 
 FOLDER holds, anywhere below it, Amazon's "Order History.csv" and "Digital Content
-Orders.csv" exports and saved transaction pages: .html files with "transaction"
-somewhere in their path.
+Orders.csv" exports and the transactions scripts/transactions.js saves: .json files
+with "transaction" somewhere in their path.
 """
 
 import argparse
@@ -88,11 +88,11 @@ def run(
 
 
 def find_inputs(folder: Path) -> tuple[list[Path], list[Path], list[Path]]:
-    """The saved transaction pages, and retail and digital exports, anywhere in `folder`."""
+    """The saved transactions, and retail and digital exports, anywhere in `folder`."""
     found = {
-        "transaction pages": [
+        "transaction files": [
             path
-            for path in folder.rglob("*.html")
+            for path in folder.rglob("*.json")
             if "transaction" in str(path.relative_to(folder)).lower()
         ],
         "order history exports": list(folder.rglob("Order History.csv")),

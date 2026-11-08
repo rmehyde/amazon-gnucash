@@ -1,102 +1,117 @@
-"""Parse saved copies of Amazon's Your Payments > Transactions page."""
+"""Parse the transactions scripts/transactions.js saves from Your Payments > Transactions."""
 
 import re
 from collections import Counter
 from datetime import date, datetime
 from decimal import Decimal
 from pathlib import Path
+from typing import Annotated, Literal
+from urllib.parse import urlsplit
 
-from selectolax.parser import HTMLParser, Node
+from pydantic import BaseModel, Field, ValidationError
 
 from amazon_gnucash.model import Charge
 
-SECTIONS = {"In Progress": True, "Completed": False}  # heading -> pending
-AMOUNT = re.compile(r"([+-])(\D+)([\d,]+\.\d\d)")
-CARD = re.compile(r"(Amazon Gift Card|.+ \*{4}\d{4})")
-ORDER = re.compile(r"(?:Refund: )?Order #(\S+)")
-GREETING = re.compile(r"Hello, (.+)")
+AMOUNT = re.compile(r"([+-])\$([\d,]+\.\d\d)")  # "$" even for Canadian dollars
+ORDER = re.compile(r"Order #(\S+)")
+# Amazon shows every amount with "$", so the currency comes from the order link's site.
+# In-store purchases have no link.
+CURRENCIES = {None: "$", "www.amazon.com": "$", "www.amazon.ca": "CA$"}
 
 
-class PageFormatError(ValueError):
+class TransactionFormatError(ValueError):
     pass
 
 
-def load_charges(pages: list[Path]) -> list[Charge]:
-    """Every charge across the pages.
+# Amazon's names for the parts of each transaction this reads; it ignores the rest.
+class _Order(BaseModel):
+    orderDisplayString: str
+    orderDetailsUrl: str
 
-    Pages downloaded at different times overlap, so a charge counts as many times
-    as it appears on any single page, not the sum across pages.
+
+class _Status(BaseModel):
+    status: Literal["Approved"]
+    amountDetailsStatusType: Literal["Charge", "Refund"]
+
+
+class _CardNumber(BaseModel):
+    prefix: Literal["••••"]
+    lastDigits: Annotated[str, Field(pattern=r"^\d{4}$")]
+
+
+class _PaymentMethod(BaseModel):
+    paymentMethodName: str
+    paymentMethodNumber: _CardNumber | None = None  # gift cards have none
+
+
+class _Transaction(BaseModel):
+    formattedAmount: str
+    formattedDate: str
+    orderData: list[_Order]
+    statementDescriptor: str
+    statusInfo: _Status
+    paymentMethodDisplayStringData: _PaymentMethod
+
+
+class _Saved(BaseModel):
+    login: str
+    transactions: list[_Transaction]
+
+
+def load_charges(files: list[Path]) -> list[Charge]:
+    """Every charge across the files.
+
+    Files saved at different times overlap, so a charge counts as many times as it
+    appears in any single file, not the sum across files.
     """
     merged = Counter[Charge]()
-    for page in pages:
-        merged |= Counter(parse_page(page.read_text(encoding="utf-8")))
+    for file in files:
+        merged |= Counter(parse_transactions(file.read_text(encoding="utf-8")))
     return list(merged.elements())
 
 
-def parse_page(html: str) -> list[Charge]:
-    tree = HTMLParser(html)
-    login = _text(GREETING, tree.css_first("#nav-link-accountList-nav-line-1"))
-    charges = [
-        _charge(item, login, day, pending)
-        for pending, section in _sections(tree)
-        for day, item in _dated_items(section)
-    ]
-    if not charges:
-        raise PageFormatError("found no transactions on the page")
-    return charges
+def parse_transactions(text: str) -> list[Charge]:
+    try:
+        saved = _Saved.model_validate_json(text)
+    except ValidationError as error:
+        raise TransactionFormatError(str(error)) from None
+    if not saved.transactions:
+        raise TransactionFormatError("found no transactions")
+    return [_charge(transaction, saved.login) for transaction in saved.transactions]
 
 
-def _sections(tree: HTMLParser):
-    for group in tree.css(".a-box-group"):
-        heading = group.css_first(".apx-transactions-sleeve-header-container")
-        if heading is None:
-            continue
-        title = heading.text(strip=True)
-        if title not in SECTIONS:
-            raise PageFormatError(f"unknown section {title!r}")
-        yield SECTIONS[title], group
-
-
-def _dated_items(section: Node):
-    # Each date heading is followed by a sibling holding that day's line items.
-    for heading in section.css(".apx-transaction-date-container"):
-        day = datetime.strptime(heading.text(strip=True), "%B %d, %Y").date()
-        sibling = heading.next
-        while sibling is not None and sibling.tag == "-text":
-            sibling = sibling.next
-        if sibling is None:
-            raise PageFormatError(f"no transactions follow the {day} heading")
-        for item in sibling.css(".apx-transactions-line-item-component-container"):
-            yield day, item
-
-
-def _charge(item: Node, login: str, day: date, pending: bool) -> Charge:
-    sign, currency, digits = _match(AMOUNT, item.css_first(".a-span-last span")).groups()
-    # The order (a link, or text for in-store purchases), then usually the merchant.
-    rows = item.css(".a-span12 > *")
-    if not 1 <= len(rows) <= 2:
-        raise PageFormatError(f"expected an order and a merchant, found {len(rows)} rows")
+def _charge(transaction: _Transaction, login: str) -> Charge:
+    if len(transaction.orderData) != 1:
+        raise TransactionFormatError(f"expected one order, found {transaction.orderData}")
+    order = transaction.orderData[0]
+    site = urlsplit(order.orderDetailsUrl).hostname
+    if site not in CURRENCIES:
+        raise TransactionFormatError(f"unknown site {site!r} in {order.orderDetailsUrl!r}")
+    sign, digits = _match(AMOUNT, transaction.formattedAmount).groups()
+    method = transaction.paymentMethodDisplayStringData
+    number = method.paymentMethodNumber
     return Charge(
         login=login,
-        order_id=_text(ORDER, rows[0]),
-        link=rows[0].attributes.get("href"),
-        merchant=rows[1].text(strip=True) if len(rows) == 2 else None,
-        card=_text(CARD, item.css_first(".a-span9 span")),
-        date=day,
+        order_id=_match(ORDER, order.orderDisplayString).group(1),
+        link=order.orderDetailsUrl or None,
+        merchant=transaction.statementDescriptor or None,
+        card=f"{method.paymentMethodName} ****{number.lastDigits}"
+        if number
+        else method.paymentMethodName,
+        date=_date(transaction.formattedDate),
         amount=Decimal(sign + digits.replace(",", "")),
-        currency=currency,
-        pending=pending,
+        currency=CURRENCIES[site],
     )
 
 
-def _text(pattern: re.Pattern, node: Node | None) -> str:
-    """The pattern's one group in the node's text."""
-    return _match(pattern, node).group(1)
+def _date(text: str) -> date:
+    try:
+        return datetime.strptime(text, "%b %d, %Y").date()
+    except ValueError:
+        raise TransactionFormatError(f"expected a date like 'Nov 07, 2026', found {text!r}") from None
 
 
-def _match(pattern: re.Pattern, node: Node | None) -> re.Match:
-    """The pattern matched against the node's text, or an error naming what was found."""
-    text = node.text(strip=True) if node is not None else ""
+def _match(pattern: re.Pattern, text: str) -> re.Match:
     if not (match := pattern.fullmatch(text)):
-        raise PageFormatError(f"expected {pattern.pattern!r}, found {text!r}")
+        raise TransactionFormatError(f"expected {pattern.pattern!r}, found {text!r}")
     return match

@@ -16,14 +16,14 @@ GnuCash book. You import the CSVs yourself.
 
 - **Amazon's data export.** Request "Your Orders" at *Account › Request Your
   Information*. The zip includes `Order History.csv` and `Digital Content Orders.csv`.
-- **Saved transaction pages.** Amazon's export doesn't say which items went on which
-  charge, but *Your Payments › Transactions* does. For each page, open your browser's
-  developer tools, right-click the `<html>` element, copy its outer HTML and save it as
-  an `.html` file with "transaction" somewhere in its path. "Save Page As" won't work
-  here, because it reloads the first page.
+- **Your transactions, saved as JSON.** Amazon's export doesn't say which items went on
+  which charge, but *Your Payments › Transactions* does. Open that page and, within 30
+  minutes, paste [`scripts/transactions.js`](scripts/transactions.js) into your
+  browser's developer console. It asks how far back to go, then downloads the
+  transactions as, for example, `transactions_pat_20260402-20261107.json`.
 
-Put everything in one folder, in any layout, with one export and one set of pages per
-Amazon account.
+Put everything in one folder, in any layout, with one export and at least one
+transactions file per Amazon account. Transactions files may overlap.
 
 ## Install
 
@@ -40,8 +40,8 @@ uncategorized = "Expenses:Amazon Uncategorized"  # where item splits go
 skip = ["Visa ****1234"]              # cards to leave out
 skip_merchants = ["Whole Foods"]      # merchants to leave out, by name start
 
-[accounts]  # payment method, as Amazon shows it -> GnuCash account
-"American Express ****1005" = "Liabilities:Amex"
+[accounts]  # payment method, as Amazon names it, then "****" and its last digits -> GnuCash account
+"American Express Gold Card ****1005" = "Liabilities:Amex"
 "Amazon Gift Card" = "Assets:Receivables:Amazon Balance"
 
 [payers]  # Amazon account -> who paid, written to each transaction's Notes
@@ -61,7 +61,8 @@ This writes, into the current folder (or `--out`):
   hand, with links to them on Amazon and the reason each one needed a person.
 
 Only charges inside the dates are written out, so consecutive runs don't import a charge
-twice.
+twice. Amazon dates charges in UTC, so a charge made in the evening can be dated a day
+later than on your card statement.
 
 ## Import into GnuCash
 
@@ -84,7 +85,9 @@ escalations report instead:
 - **Ambiguity:** more than one way the items could fit the charges.
 - **Unmapped cards:** a payment method your config doesn't mention.
 
-Pending charges and skipped cards or merchants are left out quietly.
+Skipped cards and merchants are left out quietly. Amazon lists a charge only once it has
+billed your card, so an order still shipping may be escalated as not adding up until
+its remaining charges appear.
 
 ---
 

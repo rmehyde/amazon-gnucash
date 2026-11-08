@@ -50,7 +50,7 @@ Date,Transaction ID,Description,Notes,Account,Memo,Amount
 def test_reports_orders_to_do_by_hand(written):
     page = HTMLParser(written["amazon_20260901-20261231_escalations.html"])
 
-    # Pending and skipped orders aren't listed; the rest are, by login, then date.
+    # Skipped orders aren't listed; the rest are, by login, then date.
     assert [
         (
             section.css_first("h2").text(),
@@ -85,12 +85,12 @@ def test_reports_orders_to_do_by_hand(written):
 
 def test_finds_inputs_anywhere_below_the_folder(tmp_path):
     for path in [
-        "pat/transactions-pages/1.html",  # "transaction" in a folder name
-        "sam/my-transactions-2.html",  # or in the file name
+        "pat/transactions/1.json",  # "transaction" in a folder name
+        "sam/transactions_sam_20260901-20260930.json",  # or in the file name
         "pat/Your Amazon Orders/Order History.csv",
         "sam/Your Amazon Orders/Order History.csv",
         "pat/Your Amazon Orders/Digital Content Orders.csv",
-        "pat/Your Amazon Orders/Media/cover.html",  # none of them
+        "pat/Your Amazon Orders/Media/cover.json",  # none of them
         "pat/Your Amazon Orders/Cart History.csv",
     ]:
         (tmp_path / path).parent.mkdir(parents=True, exist_ok=True)
@@ -99,7 +99,7 @@ def test_finds_inputs_anywhere_below_the_folder(tmp_path):
     found = find_inputs(tmp_path)
 
     assert [[p.relative_to(tmp_path).as_posix() for p in paths] for paths in found] == [
-        ["pat/transactions-pages/1.html", "sam/my-transactions-2.html"],
+        ["pat/transactions/1.json", "sam/transactions_sam_20260901-20260930.json"],
         [
             "pat/Your Amazon Orders/Order History.csv",
             "sam/Your Amazon Orders/Order History.csv",
@@ -109,11 +109,11 @@ def test_finds_inputs_anywhere_below_the_folder(tmp_path):
 
 
 @pytest.mark.parametrize(
-    "missing", ["transaction pages", "order history exports", "digital order exports"]
+    "missing", ["transaction files", "order history exports", "digital order exports"]
 )
 def test_insists_on_every_kind_of_input(tmp_path, missing):
     for kind, name in [
-        ("transaction pages", "transactions.html"),
+        ("transaction files", "transactions.json"),
         ("order history exports", "Order History.csv"),
         ("digital order exports", "Digital Content Orders.csv"),
     ]:

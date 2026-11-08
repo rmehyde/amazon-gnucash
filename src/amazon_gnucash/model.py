@@ -27,7 +27,7 @@ class Charge(BaseModel):
 
     model_config = ConfigDict(frozen=True)
 
-    login: str  # the Amazon account the page was saved from
+    login: str  # the Amazon account the transactions were saved from
     order_id: str
     card: str
     date: date
@@ -35,7 +35,6 @@ class Charge(BaseModel):
     currency: str  # the symbol Amazon shows, e.g. "$" or "CA$"
     link: str | None  # to the order on Amazon; in-store purchases have none
     merchant: str | None  # who was paid, e.g. "Whole Foods FTG 10000", when shown
-    pending: bool
 
 
 class Order(BaseModel):

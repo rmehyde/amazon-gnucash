@@ -5,40 +5,33 @@ from pathlib import Path
 import pytest
 
 from amazon_gnucash.model import Charge
-from amazon_gnucash.parse.transactions import PageFormatError, load_charges, parse_page
+from amazon_gnucash.parse.transactions import (
+    TransactionFormatError,
+    load_charges,
+    parse_transactions,
+)
 
-FIXTURE = Path(__file__).parent / "fixtures" / "transactions.html"
+FIXTURE = Path(__file__).parent / "fixtures" / "transactions_pat_20251230-20260920.json"
 
 
-def charge(
-    order_id,
-    day,
-    amount,
-    merchant,
-    pending=False,
-    card="Visa ****4242",
-    currency="$",
-    site="com",
-):
+def charge(order_id, day, amount, merchant, card="Visa ****4242", currency="$", site="com"):
     return Charge(
         login="Pat",
         order_id=order_id,
         card=card,
         date=day,
         amount=Decimal(amount),
-        pending=pending,
         currency=currency,
         link=site and f"https://www.amazon.{site}/gp/css/summary/edit.html?orderID={order_id}",
         merchant=merchant,
     )
 
 
-def test_parses_page():
-    charges = parse_page(FIXTURE.read_text())
+def test_parses_transactions():
+    charges = parse_transactions(FIXTURE.read_text())
 
-    assert len(charges) == 12
+    assert len(charges) == 11
     mktp, mastercard, gift_card = "AMZN Mktp US", "Mastercard ****5555", "Amazon Gift Card"
-    assert charge("112-0000005-0000005", date(2026, 9, 26), "-47.47", mktp, pending=True) in charges
     refund = charge("111-0000003-0000003", date(2026, 9, 15), "+195.92", "Amazon.com", card=gift_card)
     assert refund in charges
     assert charge("112-0000002-0000002", date(2026, 9, 7), "-15.00", mktp) in charges  # shares a day
@@ -54,19 +47,23 @@ def test_parses_page():
     assert no_merchant in charges
 
 
-def test_overlapping_pages_count_each_charge_once():
+def test_overlapping_files_count_each_charge_once():
     assert sorted(load_charges([FIXTURE, FIXTURE]), key=repr) == sorted(
-        parse_page(FIXTURE.read_text()), key=repr
+        parse_transactions(FIXTURE.read_text()), key=repr
     )
 
 
 @pytest.mark.parametrize(
     "old, new",
     [
-        ("apx-transactions-line-item-component-container", "renamed"),
-        ("-$8.70", "-8.70 USD"),
+        ('"status": "Approved"', '"status": "Declined"'),
+        ('"-$8.70"', '"-8.70 USD"'),
+        ("https://www.amazon.ca/", "https://www.amazon.co.uk/"),
+        ('"formattedDate"', '"date"'),
     ],
 )
-def test_rejects_evolved_page(old, new):
-    with pytest.raises(PageFormatError):
-        parse_page(FIXTURE.read_text().replace(old, new))
+def test_rejects_evolved_transactions(old, new):
+    text = FIXTURE.read_text()
+    assert old in text
+    with pytest.raises(TransactionFormatError):
+        parse_transactions(text.replace(old, new, 1))

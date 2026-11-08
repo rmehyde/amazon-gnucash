@@ -1,0 +1,270 @@
+{
+ "login": "Pat",
+ "saved": "2026-09-27T16:00:00.000Z",
+ "since": "2025-12-01",
+ "complete": false,
+ "transactions": [
+  {
+   "formattedAmount": "-$37.00",
+   "formattedDate": "Sep 20, 2026",
+   "orderData": [
+    {
+     "orderDisplayString": "Order #111-0000011-0000011",
+     "orderDetailsUrl": "https://www.amazon.com/gp/css/summary/edit.html?orderID=111-0000011-0000011"
+    }
+   ],
+   "statementDescriptor": "Amazon.com",
+   "statusInfo": {
+    "status": "Approved",
+    "label": "Charged",
+    "amountDetailsStatusType": "Charge"
+   },
+   "transactionFilterTags": [],
+   "paymentMethodDisplayStringData": {
+    "paymentMethodName": "Visa",
+    "paymentMethodNumber": {
+     "prefix": "••••",
+     "lastDigits": "4242"
+    }
+   }
+  },
+  {
+   "formattedAmount": "+$195.92",
+   "formattedDate": "Sep 15, 2026",
+   "orderData": [
+    {
+     "orderDisplayString": "Order #111-0000003-0000003",
+     "orderDetailsUrl": "https://www.amazon.com/gp/css/summary/edit.html?orderID=111-0000003-0000003"
+    }
+   ],
+   "statementDescriptor": "Amazon.com",
+   "statusInfo": {
+    "status": "Approved",
+    "label": "Refunded",
+    "amountDetailsStatusType": "Refund"
+   },
+   "transactionFilterTags": [
+    "REFUND"
+   ],
+   "paymentMethodDisplayStringData": {
+    "paymentMethodName": "Amazon Gift Card"
+   }
+  },
+  {
+   "formattedAmount": "-$34.62",
+   "formattedDate": "Sep 12, 2026",
+   "orderData": [
+    {
+     "orderDisplayString": "Order #00000000-0000-4000-8000-000000000010",
+     "orderDetailsUrl": ""
+    }
+   ],
+   "statementDescriptor": "Whole Foods FTG 10000",
+   "statusInfo": {
+    "status": "Approved",
+    "label": "Charged",
+    "amountDetailsStatusType": "Charge"
+   },
+   "transactionFilterTags": [],
+   "paymentMethodDisplayStringData": {
+    "paymentMethodName": "Visa",
+    "paymentMethodNumber": {
+     "prefix": "••••",
+     "lastDigits": "4242"
+    }
+   }
+  },
+  {
+   "formattedAmount": "-$56.24",
+   "formattedDate": "Sep 10, 2026",
+   "orderData": [
+    {
+     "orderDisplayString": "Order #111-0000009-0000009",
+     "orderDetailsUrl": "https://www.amazon.ca/gp/css/summary/edit.html?orderID=111-0000009-0000009"
+    }
+   ],
+   "statementDescriptor": "Amazon.ca",
+   "statusInfo": {
+    "status": "Approved",
+    "label": "Charged",
+    "amountDetailsStatusType": "Charge"
+   },
+   "transactionFilterTags": [],
+   "paymentMethodDisplayStringData": {
+    "paymentMethodName": "Visa",
+    "paymentMethodNumber": {
+     "prefix": "••••",
+     "lastDigits": "4242"
+    }
+   }
+  },
+  {
+   "formattedAmount": "-$15.00",
+   "formattedDate": "Sep 07, 2026",
+   "orderData": [
+    {
+     "orderDisplayString": "Order #112-0000002-0000002",
+     "orderDetailsUrl": "https://www.amazon.com/gp/css/summary/edit.html?orderID=112-0000002-0000002"
+    }
+   ],
+   "statementDescriptor": "AMZN Mktp US",
+   "statusInfo": {
+    "status": "Approved",
+    "label": "Charged",
+    "amountDetailsStatusType": "Charge"
+   },
+   "transactionFilterTags": [],
+   "paymentMethodDisplayStringData": {
+    "paymentMethodName": "Visa",
+    "paymentMethodNumber": {
+     "prefix": "••••",
+     "lastDigits": "4242"
+    }
+   }
+  },
+  {
+   "formattedAmount": "-$1,249.99",
+   "formattedDate": "Sep 07, 2026",
+   "orderData": [
+    {
+     "orderDisplayString": "Order #111-0000006-0000006",
+     "orderDetailsUrl": "https://www.amazon.com/gp/css/summary/edit.html?orderID=111-0000006-0000006"
+    }
+   ],
+   "statementDescriptor": "Amazon.com",
+   "statusInfo": {
+    "status": "Approved",
+    "label": "Charged",
+    "amountDetailsStatusType": "Charge"
+   },
+   "transactionFilterTags": [],
+   "paymentMethodDisplayStringData": {
+    "paymentMethodName": "Mastercard",
+    "paymentMethodNumber": {
+     "prefix": "••••",
+     "lastDigits": "5555"
+    }
+   }
+  },
+  {
+   "formattedAmount": "-$21.33",
+   "formattedDate": "Sep 04, 2026",
+   "orderData": [
+    {
+     "orderDisplayString": "Order #112-0000002-0000002",
+     "orderDetailsUrl": "https://www.amazon.com/gp/css/summary/edit.html?orderID=112-0000002-0000002"
+    }
+   ],
+   "statementDescriptor": "AMZN Mktp US",
+   "statusInfo": {
+    "status": "Approved",
+    "label": "Charged",
+    "amountDetailsStatusType": "Charge"
+   },
+   "transactionFilterTags": [],
+   "paymentMethodDisplayStringData": {
+    "paymentMethodName": "Visa",
+    "paymentMethodNumber": {
+     "prefix": "••••",
+     "lastDigits": "4242"
+    }
+   }
+  },
+  {
+   "formattedAmount": "-$8.70",
+   "formattedDate": "Sep 02, 2026",
+   "orderData": [
+    {
+     "orderDisplayString": "Order #111-0000001-0000001",
+     "orderDetailsUrl": "https://www.amazon.com/gp/css/summary/edit.html?orderID=111-0000001-0000001"
+    }
+   ],
+   "statementDescriptor": "Amazon.com",
+   "statusInfo": {
+    "status": "Approved",
+    "label": "Charged",
+    "amountDetailsStatusType": "Charge"
+   },
+   "transactionFilterTags": [],
+   "paymentMethodDisplayStringData": {
+    "paymentMethodName": "Visa",
+    "paymentMethodNumber": {
+     "prefix": "••••",
+     "lastDigits": "4242"
+    }
+   }
+  },
+  {
+   "formattedAmount": "-$195.92",
+   "formattedDate": "Aug 28, 2026",
+   "orderData": [
+    {
+     "orderDisplayString": "Order #111-0000003-0000003",
+     "orderDetailsUrl": "https://www.amazon.com/gp/css/summary/edit.html?orderID=111-0000003-0000003"
+    }
+   ],
+   "statementDescriptor": "Amazon.com",
+   "statusInfo": {
+    "status": "Approved",
+    "label": "Charged",
+    "amountDetailsStatusType": "Charge"
+   },
+   "transactionFilterTags": [],
+   "paymentMethodDisplayStringData": {
+    "paymentMethodName": "Visa",
+    "paymentMethodNumber": {
+     "prefix": "••••",
+     "lastDigits": "4242"
+    }
+   }
+  },
+  {
+   "formattedAmount": "-$3.99",
+   "formattedDate": "Aug 22, 2026",
+   "orderData": [
+    {
+     "orderDisplayString": "Order #D01-0000004-0000004",
+     "orderDetailsUrl": "https://www.amazon.com/gp/css/summary/edit.html?orderID=D01-0000004-0000004"
+    }
+   ],
+   "statementDescriptor": "Prime Video TVOD",
+   "statusInfo": {
+    "status": "Approved",
+    "label": "Charged",
+    "amountDetailsStatusType": "Charge"
+   },
+   "transactionFilterTags": [],
+   "paymentMethodDisplayStringData": {
+    "paymentMethodName": "Visa",
+    "paymentMethodNumber": {
+     "prefix": "••••",
+     "lastDigits": "4242"
+    }
+   }
+  },
+  {
+   "formattedAmount": "-$12.00",
+   "formattedDate": "Dec 30, 2025",
+   "orderData": [
+    {
+     "orderDisplayString": "Order #111-0000008-0000008",
+     "orderDetailsUrl": "https://www.amazon.com/gp/css/summary/edit.html?orderID=111-0000008-0000008"
+    }
+   ],
+   "statementDescriptor": "",
+   "statusInfo": {
+    "status": "Approved",
+    "label": "Charged",
+    "amountDetailsStatusType": "Charge"
+   },
+   "transactionFilterTags": [],
+   "paymentMethodDisplayStringData": {
+    "paymentMethodName": "Mastercard",
+    "paymentMethodNumber": {
+     "prefix": "••••",
+     "lastDigits": "5555"
+    }
+   }
+  }
+ ]
+}

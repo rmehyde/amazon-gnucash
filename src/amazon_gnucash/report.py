@@ -63,10 +63,9 @@ def _order(escalation: Escalated) -> str:
 
 
 def _charge(charge: Charge) -> tuple[str, ...]:
-    status = " (pending)" if charge.pending else ""
     sign = "+" if charge.amount > 0 else "−"
     amount = f"{sign}{charge.currency}{abs(charge.amount):,.2f}"
-    return f"{charge.date}{status}", escape(charge.card), amount
+    return str(charge.date), escape(charge.card), amount
 
 
 def _item_total(item: Item) -> str:

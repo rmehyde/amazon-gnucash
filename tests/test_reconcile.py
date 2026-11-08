@@ -8,7 +8,7 @@ from amazon_gnucash.config import load_config
 from amazon_gnucash.model import Charge, Item, Order
 from amazon_gnucash.orders import gather
 from amazon_gnucash.parse.export import load_digital_items, load_retail_items
-from amazon_gnucash.parse.transactions import parse_page
+from amazon_gnucash.parse.transactions import load_charges
 from amazon_gnucash.reconcile import Reason, Resolved, reconcile
 
 FIXTURES = Path(__file__).parent / "fixtures"
@@ -30,7 +30,7 @@ def test_reconciles_orders():
         *load_retail_items(FIXTURES / "Order History.csv"),
         *load_digital_items(FIXTURES / "Digital Content Orders.csv"),
     ]
-    charges = parse_page((FIXTURES / "transactions.html").read_text())
+    charges = load_charges([FIXTURES / "transactions_pat_20251230-20260920.json"])
     orders = gather(items, charges, since=date(2026, 1, 1), until=date(2026, 12, 31))
 
     assert {o.order_id: outcome(reconcile(o, CONFIG)) for o in orders} == {
@@ -56,7 +56,6 @@ def test_reconciles_orders():
         "D01-0000004-0000004": [
             (date(2026, 8, 22), "Liabilities:Visa", Decimal("-3.99"), ["The Paper Moon"]),
         ],
-        "112-0000005-0000005": ("Skipped", Reason.PENDING),
         "111-0000006-0000006": ("Skipped", Reason.SKIPPED_CARD),
         "111-0000009-0000009": ("Escalated", Reason.NOT_IN_USD),
         "00000000-0000-4000-8000-000000000010": ("Escalated", Reason.NOT_IN_EXPORT),
@@ -83,7 +82,6 @@ def charge(amount, day=1, card="Visa ****4242", merchant="Amazon.com"):
         card=card,
         date=date(2026, 9, day),
         amount=Decimal(amount),
-        pending=False,
         currency="$",
         link=None,
         merchant=merchant,

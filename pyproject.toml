@@ -7,7 +7,6 @@ requires-python = ">=3.11"
 dependencies = [
     "polars>=1.44.2",
     "pydantic>=2.13.5",
-    "selectolax>=0.4.12",
 ]
 
 [project.scripts]
@@ -16,6 +15,7 @@ amazon-gnucash = "amazon_gnucash.cli:main"
 [dependency-groups]
 dev = [
     "pytest>=9.1.1",
+    "selectolax>=0.4.12",
 ]
 
 [build-system]
