@@ -83,8 +83,10 @@ def run(
     ]
     escalations = [outcome for outcome in outcomes if isinstance(outcome, Escalated)]
     prefix = f"amazon_{since:%Y%m%d}-{until:%Y%m%d}_"
-    report = write_report(escalations, out / f"{prefix}escalations.html", since, until)
-    return outcomes, [*write_imports(transactions, config, out, prefix), report]
+    paths = write_imports(transactions, config, out, prefix)
+    if escalations:
+        paths.append(write_report(escalations, out / f"{prefix}escalations.html", since, until))
+    return outcomes, paths
 
 
 def find_inputs(folder: Path) -> tuple[list[Path], list[Path], list[Path]]:

@@ -10,17 +10,21 @@ from amazon_gnucash.config import load_config
 FIXTURES = Path(__file__).parent / "fixtures"
 
 
-@pytest.fixture
-def written(tmp_path):
-    """What a September run over the fixtures writes, by file name."""
+def write(out, since, until):
+    """What a run over the fixtures writes, by file name."""
     _, paths = run(
         folder=FIXTURES,
         config=load_config(FIXTURES / "amazon.toml"),
-        since=date(2026, 9, 1),
-        until=date(2026, 12, 31),
-        out=tmp_path,
+        since=since,
+        until=until,
+        out=out,
     )
     return {path.name: path.read_text() for path in paths}
+
+
+@pytest.fixture
+def written(tmp_path):
+    return write(tmp_path, since=date(2026, 9, 1), until=date(2026, 12, 31))
 
 
 def test_writes_an_import_per_account(written):
@@ -81,6 +85,12 @@ def test_reports_orders_to_do_by_hand(written):
             ],
         )
     ]
+
+
+def test_writes_no_report_without_escalations(tmp_path):
+    write(tmp_path, since=date(2026, 9, 1), until=date(2026, 9, 9))  # all resolve or skip
+
+    assert [path.name for path in tmp_path.iterdir()] == ["amazon_20260901-20260909_visa.csv"]
 
 
 def test_finds_inputs_anywhere_below_the_folder(tmp_path):

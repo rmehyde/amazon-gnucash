@@ -58,7 +58,8 @@ This writes, into the current folder (or `--out`):
 
 - `amazon_20260901-20260930_<gnucash-account>.csv`: one GnuCash import per account.
 - `amazon_20260901-20260930_escalations.html`: the orders left for you to enter by
-  hand, with links to them on Amazon and the reason each one needed a person.
+  hand, with links to them on Amazon and the reason each one needed a person. It's
+  only written when there are some.
 
 Only charges inside the dates are written out, so consecutive runs don't import a charge
 twice. Amazon dates charges in UTC, so a charge made in the evening can be dated a day
